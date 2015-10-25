@@ -6,6 +6,7 @@ import java.util.Iterator;
 public class ListaOrd implements ILista {
 
 	private NodoLista inicio;
+	private NodoLista fin;
 	private Comparator<Object> comp;
 	
 	public ListaOrd(Comparator<Object> comp) {
@@ -43,6 +44,33 @@ public class ListaOrd implements ILista {
     public void borrarInicio(){
         if (!this.esVacia()){
             this.inicio=this.inicio.getSig();
+        }
+    }
+	
+	//PRE: 
+    //POS: Agrega un nuevo Nodo al principio de la lista
+    public void agregarInicio(Object n){
+        NodoLista nuevo= new NodoLista(n);
+        nuevo.setSig(inicio);
+        this.inicio=nuevo;
+        if(this.fin==null)//estoy insertando el primer nodo
+            this.fin=nuevo;
+        }
+	
+	 //PRE:
+    //POS: Agrega un nuevo Nodo al final de la lista
+    public void agregarFinal(Object n){
+        //NodoLista nuevo= new NodoLista(n);
+        if (this.esVacia())
+            this.agregarInicio(n);
+        else
+        {
+            NodoLista aux=this.inicio;
+            while (aux.getSig() != null)
+                aux=aux.getSig();
+            NodoLista nuevo= new NodoLista(n);
+            aux.setSig(nuevo);
+            this.fin=nuevo;
         }
     }
 	

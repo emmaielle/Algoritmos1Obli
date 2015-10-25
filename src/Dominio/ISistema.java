@@ -36,7 +36,7 @@ public interface ISistema {
 
 	public TipoRet listarZonas();
 	
-	public boolean buscarZona(int idZona);
+	public Zona buscarZona(int idZona);
 
 	public TipoRet agregarRuta(int zonaOrigen, int zonaDestino, int minutosViaje);
 

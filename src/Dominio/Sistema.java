@@ -27,7 +27,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet registrarMovil(String movilID, int zonaID) {
-		if (!this.buscarZona(zonaID)) return TipoRet.ERROR1;
+		if (this.buscarZona(zonaID) == null) return TipoRet.ERROR1;
 		if (buscarMovil(movilID).equals(TipoRet.OK)) return TipoRet.ERROR2;
 		
 		Movil mov = new Movil();
@@ -81,12 +81,30 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet informeMovil(int zonaID) {
-		return TipoRet.NO_IMPLEMENTADA;
+		Zona z = this.buscarZona(zonaID);
+		
+		if (z  == null) return TipoRet.NO_IMPLEMENTADA;
+		System.out.println(z.informeMovil());
+		return TipoRet.OK;
+		
 	}
 
+	//PRE: ZonaID tiene que se contigua a la zona actual en la que está el movil y diferente a la zona actual
 	@Override
 	public TipoRet recibirLlamado(String movilID, int zonaID) {
-		return TipoRet.NO_IMPLEMENTADA;
+		Movil m = this.buscarMovilReturnIt(movilID);
+		if (m != null){
+			Zona z = this.buscarZona(zonaID); 
+			if (z != null){
+				if (m.estado.equals(Estado.DISPONIBLE)){
+					m.recibirLlamado(z);
+					return TipoRet.OK;
+				}
+				else return TipoRet.ERROR3; // este error no está en la letra del obligatorio, pero deberia estar....
+			}
+			else return TipoRet.ERROR1;
+		}
+		else return TipoRet.ERROR2;
 	}
 
 	@Override
@@ -105,12 +123,12 @@ public class Sistema implements ISistema {
 	}
 	
 	@Override
-	public boolean buscarZona(int idZona){
+	public Zona buscarZona(int idZona){
 		for (Object o : zonas) {
 			Zona z = (Zona) o;
-			if (z.tieneIdX(idZona)) return true;
+			if (z.tieneIdX(idZona)) return z;
 		}
-		return false;
+		return null;
 	}
 
 	@Override

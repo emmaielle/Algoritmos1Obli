@@ -29,6 +29,10 @@ public class Movil {
 		return Integer.compare(id, other.getId());
 	}
 	
+	public void recibirLlamado(Zona zona){
+		this.llamados.agregarFinal(zona);
+	}
+	
 	// si disponible o no_disponible, --> cuando atienda un nuevo llamado, se le elimina el ultimo llamado que atendió, que es el 
 	// que da la información de la zona en la que se encuentra
 	// PRE: La ubicación del móvil es igual al primer item de la lista de llamados que posee, que es el que 
