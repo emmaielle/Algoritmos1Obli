@@ -26,6 +26,8 @@ public interface ISistema {
 
 	public TipoRet informeMovil(int zonaID); // informe por zona
 
+	public Movil buscarMovilReturnIt(String movilID);
+	
 	public TipoRet recibirLlamado(String movilID, int zonaID);
 
 	public TipoRet cambiarUbicacion(String movilID, int zonaID);
@@ -33,6 +35,8 @@ public interface ISistema {
 	public TipoRet agregarZona(String zonaNombre);
 
 	public TipoRet listarZonas();
+	
+	public boolean buscarZona(int idZona);
 
 	public TipoRet agregarRuta(int zonaOrigen, int zonaDestino, int minutosViaje);
 

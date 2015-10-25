@@ -11,6 +11,61 @@ public class ListaOrd implements ILista {
 	public ListaOrd(Comparator<Object> comp) {
 		this.comp = comp;
 	}
+	
+	//moi
+	//PRE:
+    //POS: Retorna true si la lista no tiene nodos
+	@Override
+    public boolean esVacia(){
+        if (this.inicio==null)
+            return true;
+        else
+            return false;
+      }
+    
+	//moi handmade
+	// cambiar a DevolverX(int cual)
+	public Object devolverPrimero(){
+		return inicio.getDato();
+	}
+	
+    //moi
+	@Override
+    public void vaciar(){
+        //en java alcanza con apuntar inicio y fin a null
+        inicio=null;
+//	        while (inicio!=null)
+//	            borrarInicio();
+    }
+    
+    //moi
+	@Override
+    public void borrarInicio(){
+        if (!this.esVacia()){
+            this.inicio=this.inicio.getSig();
+        }
+    }
+	
+	//PRE: lista ordenada
+    //POS: Borra la primer ocurrencia de un elemento dado
+    public void borrarElemento(Object n){
+        if (this.esVacia())
+            return;
+        if (this.inicio.getDato()== n)
+            this.borrarInicio();
+        else
+        {
+            NodoLista aux=this.inicio;
+            while (aux.getSig()!=null && aux.getSig().getDato() != n)
+                aux=aux.getSig();
+            //lo encontré o llegué al final de la lista
+            if (aux.getSig()!=null){
+                NodoLista borrar = aux.getSig();
+                aux.setSig(borrar.getSig());
+                borrar.setSig(null);
+            }
+        }
+    }
 
 	@Override
 	public Iterator<Object> iterator() {
