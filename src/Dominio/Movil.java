@@ -6,8 +6,8 @@ import Listas.MovilComparator;
 
 public class Movil {
 
-	int id; // los id los hacemos int?
-	static int ultID;
+	private String  id; 
+	private static int ultID;
 	
 	public enum Estado {
 
@@ -20,13 +20,13 @@ public class Movil {
 	ILista choferes;
 	ListaOrd llamados = new ListaOrd(new MovilComparator());
 	
-	public Movil(){
-		this.id = Movil.ultID + 1;
+	public Movil(String id){
+		this.id = id;
 		this.estado = Estado.DISPONIBLE;
 	}
 	
 	public int compareTo(Movil other){
-		return Integer.compare(id, other.getId());
+		return id.compareTo(other.getId());
 	}
 	
 	public void recibirLlamado(Zona zona){
@@ -47,11 +47,11 @@ public class Movil {
 		return ret;
 	}
 	
-	public int getId(){
+	public String getId(){
 		return this.id;
 	}
 	
-	public void setId(int id){
+	public void setId(String id){
 		this.id = id;
 	}
 }
