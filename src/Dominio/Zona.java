@@ -1,5 +1,6 @@
 package Dominio;
 
+import Dominio.Movil.Estado;
 import Listas.ListaOrd;
 import Listas.ListaSEIni;
 
@@ -12,10 +13,13 @@ public class Zona {
 	
 	public void informeMovil(){
 		System.out.println("Informe de móviles en: " + this.id + "-" + this.nombre);
-		for (Object o : moviles){
-			Movil m = (Movil) o;
-			System.out.println(m.getId());
+		if (!this.moviles.esVacia()){
+			for (Object o : moviles){
+				Movil m = (Movil) o;
+				if (m.getEstado().equals(Estado.DISPONIBLE))System.out.println(m.getId());
+			}
 		}
+		else System.out.println("Esta zona no tiene móviles");
 	}
 	
 	public Ruta buscarRutaHastaX(int zDestino){
@@ -55,7 +59,7 @@ public class Zona {
 		int movDisp = 0;
 		int movNOdisp = 0;
 		for (Object o: this.moviles){
-			if (((Movil) o).estado.equals(Movil.Estado.NO_DISPONIBLE)) movNOdisp ++;
+			if (((Movil) o).getEstado().equals(Movil.Estado.NO_DISPONIBLE)) movNOdisp ++;
 			else movDisp ++;
 		}
 		System.out.println("Móvils disponibles: " + movDisp);
@@ -72,6 +76,10 @@ public class Zona {
 	
 	public int getId(){
 		return this.id;
+	}
+	
+	public void setId(int id){
+		this.id = id;
 	}
 	
 	public ListaOrd getMoviles(){

@@ -26,7 +26,7 @@ public interface ISistema {
 	// POS:	
 	public TipoRet habilitarMovil(String movilID);
 
-	// PRE: 
+	// PRE: No hay precondiciones?
 	// POS: "Destruye el móvil movilId y todos sus elementos y referencias liberando la memoria utilizada"
 	public TipoRet eliminarMovil(String movilID);
 
@@ -34,16 +34,17 @@ public interface ISistema {
 	// POS:
 	public TipoRet buscarMovil(String movilId);
 
-	// PRE:
-	// POS:
+	// PRE: No hay precondiciones?
+	// POS: Imprime los móviles ordenados según movilId, su estado y la zona donde se encuentra. 
 	public TipoRet informeMovil();
 
-	// PRE:
-	// POS:
+	// PRE: Se asume que zonaID es un id válido de una zona existente
+	// POS: Imprime todos los móviles disponibles que se encuentran en la zona zonaID (ordenados por movilId de forma ascendente)
 	public TipoRet informeMovil(int zonaID); 
 
-	// PRE:
-	// POS:
+	// PRE:	ZonaID tiene que ser contigua a la zona actual en la que está el movil y diferente a la zona actual. El móvil se asume que
+	// esta en estado disponible siempre que se llama el método
+	// POS: Se agendarán llamados al móvil dejando últimos los más recientes.
 	public TipoRet recibirLlamado(String movilID, int zonaID);
 
 	// PRE:
@@ -64,19 +65,22 @@ public interface ISistema {
 
 	// PRE: Se asume que ya existe una ruta con origen = zonaOrigen y destino = zonaDestino, la cual ya fue ingresada en la lista
 	// de rutas de zonaOrigen
-	// POS: Se modifica minutosViaje para la ruta solicitada
+	// POS: Se modifica minutosViaje para la ruta solicitada y su ruta complementaria
 	public TipoRet modificarDemora(int zonaOrigen, int zonaDestino, int minutosViaje);
 
-	// PRE:
-	// POS:
+	// PRE: No tiene precondiciones? 
+	// POS: Muestra los datos del móvil más cercano a la zona zonaID y el tiempo que demora en llegar. Si hay algún móvil en la zona zonaID 
+	// el tiempo de demora será 0. Sólo busca en las zonas inmediatamente contiguas a zonaID, como hablado en clase
 	public TipoRet movilMasCercana(int zonaID);
 
-	// PRE:
-	// POS:
+	// PRE: No tiene precondiciones? 
+	// POS: Muestra la ruta más rápida para ir desde zona zonaOrigen a zona zonaDestino. Despliega las zonas intermedias 
+	// y el tiempo estimado de cada tramo y el viaje completo (limitar a 2 tramos)???.
 	public TipoRet rutaMasRapida(int zonaOrigen, int zonaDestino);
 
-	// PRE:
-	// POS:
+	// PRE: Se asume que la lista de zonas tiene al menos un elemento
+	// POS: Imprime todas las zonas detallando las zonas con las que tiene ruta directa y la demora del viaje. También 
+	//detalla la cantidad de móviles según su estado que se encuentran cada	zona.
 	public TipoRet informeZonas();
 
 	// PRE:
@@ -91,20 +95,20 @@ public interface ISistema {
 	// POS: 
 	public TipoRet eliminarChofer(String movilId, String cedula);
 
-	// PRE:
-	// POS:
+	// PRE: No tiene precondiciones?
+	// POS: Imprime un informe con todos los choferes habilitados para conducir el móvil movilId.
 	public TipoRet informeChoferes(String movilId);
 
-	// PRE:
-	// POS:
+	// PRE: No tiene precondiciones?
+	// POS: Crea un nuevo abonado con identificador abonadoID, abonadoNombre, abonadoDireccion, abonadoTel y lo asigna a la zona zonaID
 	public TipoRet registrarAbonado(int abonadoID, String abonadoNombre, String abonadoDireccion, String abonadoTel, int zonaID);
 
 	// PRE:
-	// POS:
+	// POS: 
 	public TipoRet eliminarAbonado(int abonadoId);
 
-	// PRE:
-	// POS:
+	// PRE: No tiene precondiciones?
+	// POS: Imprime por pantalla todos los abonados que se encuentran en la zona zonaID (ordenados por abonadoNombre de forma ascendente)
 	public TipoRet informeAbonadosZona(int zonaID);
 
 }

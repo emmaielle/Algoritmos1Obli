@@ -14,15 +14,17 @@ public class Movil implements Comparable<Movil> {
 
 	};
 	
-	Estado estado;
+	private Estado estado;
 	
-	ListaSEIni choferes;
-	ListaOrd llamados;
+	private ListaSEIni choferes;
+	private ListaOrd llamados;
+	private Zona ubicacion;
 	
-	public Movil(String id){
+	public Movil(String id, Zona ubicacion){
 		this.id = id;
 		this.estado = Estado.DISPONIBLE;
 		this.llamados = new ListaOrd(new MovilComparator());
+		this.ubicacion = ubicacion;
 	}
 	
 	@Override
@@ -49,7 +51,7 @@ public class Movil implements Comparable<Movil> {
 	@Override
 	public String toString(){
 		// el primero es el ultimo que atendió y por ende donde está ahora (todavia no se elimino hasta que atienda uno nuevo)
-		Zona oUbicacion = (Zona) this.llamados.devolverPrimero();
+		Zona oUbicacion = (Zona) this.ubicacion;
 		String sUbicacion = oUbicacion.getNombre();
 		
 		String ret = this.id + "-" + this.estado.toString();
@@ -63,5 +65,25 @@ public class Movil implements Comparable<Movil> {
 	
 	public void setId(String id){
 		this.id = id;
+	}
+	
+	public ListaOrd getLlamados(){
+		return this.llamados;
+	}
+	
+	public void setEstado(Estado estado){
+		this.estado = estado;
+	}
+	
+	public Estado getEstado(){
+		return this.estado;
+	}
+	
+	public void setUbicacion(Zona ubicacion){
+		this.ubicacion = ubicacion;
+	}
+	
+	public Zona getUbicacion(){
+		return this.ubicacion;
 	}
 }

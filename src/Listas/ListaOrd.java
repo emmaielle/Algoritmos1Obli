@@ -84,7 +84,7 @@ public class ListaOrd implements ILista {
         else
         {
             NodoLista aux=this.inicio;
-            while (aux.getSig()!=null && aux.getSig().getDato() != n)
+            while (aux.getSig()!=null && !aux.getSig().getDato().equals(n))
                 aux=aux.getSig();
             //lo encontré o llegué al final de la lista
             if (aux.getSig()!=null){
