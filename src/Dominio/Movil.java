@@ -1,13 +1,12 @@
 package Dominio;
 
-import Listas.ILista;
 import Listas.ListaOrd;
+import Listas.ListaSEIni;
 import Listas.MovilComparator;
 
-public class Movil {
+public class Movil implements Comparable<Movil> {
 
 	private String  id; 
-	private static int ultID;
 	
 	public enum Estado {
 
@@ -17,20 +16,31 @@ public class Movil {
 	
 	Estado estado;
 	
-	ILista choferes;
-	ListaOrd llamados = new ListaOrd(new MovilComparator());
+	ListaSEIni choferes;
+	ListaOrd llamados;
 	
 	public Movil(String id){
 		this.id = id;
 		this.estado = Estado.DISPONIBLE;
+		this.llamados = new ListaOrd(new MovilComparator());
 	}
 	
+	@Override
 	public int compareTo(Movil other){
 		return id.compareTo(other.getId());
 	}
 	
 	public void recibirLlamado(Zona zona){
 		this.llamados.agregarFinal(zona);
+	}
+	
+	public void printInforme(){
+		if (!this.choferes.esVacia()){
+			for (Object o : this.choferes){
+				System.out.println("Nombre: " + ((Chofer) o).getNombre() + ", Cédula:" + ((Chofer)o).getCedula());
+			}
+		}
+		else System.out.println("No posee choferes habilitados");
 	}
 	
 	// si disponible o no_disponible, --> cuando atienda un nuevo llamado, se le elimina el ultimo llamado que atendió, que es el 

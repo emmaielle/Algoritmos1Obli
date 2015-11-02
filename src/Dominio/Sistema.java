@@ -2,15 +2,16 @@ package Dominio;
 
 
 import Dominio.Movil.Estado;
+import Listas.AbonadoComparator;
 import Listas.ListaOrd;
 import Listas.ListaSEIni;
-import Listas.MovilComparator;
 
 public class Sistema implements ISistema {
 
 	ListaSEIni zonas;
-	ListaOrd moviles = new ListaOrd(new MovilComparator());
+	ListaOrd moviles;
 	int cantZonas;
+	ListaSEIni abonados;
 
 	@Override
 	public TipoRet crearSistemaSeguridad(int cantZonas) {
@@ -22,6 +23,8 @@ public class Sistema implements ISistema {
 	public TipoRet destruirSistemaSeguridad() {
 		zonas.vaciar();
 		moviles.vaciar();
+		abonados.vaciar();
+		cantZonas = 0;
 		return TipoRet.OK;
 	}
 
@@ -65,7 +68,6 @@ public class Sistema implements ISistema {
 		return TipoRet.NO_IMPLEMENTADA;
 	}
 
-	@Override 
 	public Movil buscarMovilReturnIt(String movilID){
 		return null;
 	}
@@ -84,7 +86,7 @@ public class Sistema implements ISistema {
 		Zona z = this.buscarZona(zonaID);
 		
 		if (z  == null) return TipoRet.NO_IMPLEMENTADA;
-		System.out.println(z.informeMovil());
+		z.informeMovil();
 		return TipoRet.OK;
 		
 	}
@@ -93,18 +95,20 @@ public class Sistema implements ISistema {
 	@Override
 	public TipoRet recibirLlamado(String movilID, int zonaID) {
 		Movil m = this.buscarMovilReturnIt(movilID);
-		if (m != null){
-			Zona z = this.buscarZona(zonaID); 
-			if (z != null){
+		
+		Zona z = this.buscarZona(zonaID); 
+		if (z != null){
+			if (m != null){
 				if (m.estado.equals(Estado.DISPONIBLE)){
 					m.recibirLlamado(z);
 					return TipoRet.OK;
 				}
 				else return TipoRet.ERROR3; // este error no está en la letra del obligatorio, pero deberia estar....
 			}
-			else return TipoRet.ERROR1;
+			else return TipoRet.ERROR2;
 		}
-		else return TipoRet.ERROR2;
+		else return TipoRet.ERROR1;
+		
 	}
 
 	@Override
@@ -122,11 +126,10 @@ public class Sistema implements ISistema {
 		return TipoRet.NO_IMPLEMENTADA;
 	}
 	
-	@Override
 	public Zona buscarZona(int idZona){
 		for (Object o : zonas) {
 			Zona z = (Zona) o;
-			if (z.tieneIdX(idZona)) return z;
+			if (z.getId() == idZona) return z;
 		}
 		return null;
 	}
@@ -171,7 +174,7 @@ public class Sistema implements ISistema {
 			ListaOrd movs = z.getMoviles();
 			if (!movs.esVacia()) {
 				tiempo = 0;
-				Movil m = (Movil) movs.devolverPrimero();
+				Movil m = (Movil) movs.devolverPrimero(); //asegurar que se pueda sacar el primero alfabeticamente
 				sMovil = m.getId();
 			}
 			else {
@@ -203,17 +206,47 @@ public class Sistema implements ISistema {
 		if (zOrigen != null){
 			Zona zDestino = this.buscarZona(zonaDestino);
 			if (zDestino != null){
-				/// hacer busqueda aca
+				//----------
+				System.out.println("Ruta más rápida:");
+				this.rutaMasRapidaREC(zOrigen, zonaDestino, 0);
+				
+				//----------
 				return TipoRet.OK;
 			}
 			else return TipoRet.ERROR2;
 		}
 		else return TipoRet.ERROR1;
 	}
+	
+	// destino se mantiene
+	public void rutaMasRapidaREC(Zona zOrigen, int zDestino, int tiempoAcumulado){ //rutaMasRapidaREC(prado, cordon, 5)
+		// cuando empieza 
+		if (tiempoAcumulado == 0) {
+			System.out.println(zOrigen.getNombre() + " - 0");
+		}
+		// no else
+		if (zOrigen.getId() != zDestino){
+			int t = Integer.MAX_VALUE; Zona z = null;
+			for (Object o : zOrigen.getEsOrigenDeRutas()){
+				Ruta ruta = (Ruta) o;
+				Zona zAux = ruta.getDestino();
+				if (ruta.getMinutosViaje() < t && zAux.getId() != zOrigen.getId()){ // la 2da condicion está mal, no hace lo que necesito
+					t = tiempoAcumulado + ruta.getMinutosViaje();
+					z = zAux;
+				}
+			}
+			System.out.println(z.getNombre() + " - " + t);
+			rutaMasRapidaREC(z, zDestino, t);
+		}
+	}
 
 	@Override
 	public TipoRet informeZonas() {
-		return TipoRet.NO_IMPLEMENTADA;
+		for (Object o : this.zonas){
+			Zona zona = (Zona) o;
+			zona.informeZona();
+		}
+		return TipoRet.OK;
 	}
 
 	@Override
@@ -233,12 +266,38 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet informeChoferes(String movilId) {
-		return TipoRet.NO_IMPLEMENTADA;
+		Movil mov = this.buscarMovilReturnIt(movilId);
+		if (mov != null){
+			System.out.println("Informe Choferes de " + movilId);
+			
+			mov.printInforme();
+			
+			return TipoRet.OK;
+		}
+		else return TipoRet.ERROR1;
 	}
 
 	@Override
 	public TipoRet registrarAbonado(int abonadoID, String abonadoNombre, String abonadoDireccion, String abonadoTel, int zonaID) {
-		return TipoRet.NO_IMPLEMENTADA;
+		Zona zona = this.buscarZona(zonaID);
+		if (zona != null){
+			if (buscarAbonado(abonadoID) == null){
+				Abonado ab = new Abonado(abonadoID, abonadoNombre, abonadoDireccion, abonadoTel, zona);
+				if (this.abonados == null) this.abonados = new ListaSEIni();
+				this.abonados.insertar(ab);
+				return TipoRet.OK;
+			}
+			else return TipoRet.ERROR2;
+		}
+		else return TipoRet.ERROR1;
+		
+	}
+	
+	public Abonado buscarAbonado(int idAbonado){
+		for (Object o : this.abonados){
+			if (((Abonado)o).getId() == idAbonado) return (Abonado) o;
+		}
+		return null;
 	}
 
 	@Override
@@ -248,7 +307,27 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet informeAbonadosZona(int zonaID) {
-		return TipoRet.NO_IMPLEMENTADA;
+		
+		Zona zona = this.buscarZona(zonaID);
+		if (zona != null){
+			System.out.println("Informe de abonados en: " + zonaID + " - " + zona.getNombre());
+			
+			// con hacer esto nomas queda ordenado???
+			ListaOrd abonadosPorZona = new ListaOrd(new AbonadoComparator()); 
+			for (Object o: this.abonados){
+				if (((Abonado)o).getZona().getId() == zonaID) abonadosPorZona.insertar((Abonado)o);
+			}
+			
+			if (!abonadosPorZona.esVacia()){
+				for (Object o : abonadosPorZona){
+					System.out.println(((Abonado)o).getNombre() + " - " + ((Abonado)o).getTelefono());
+				}
+			}
+			else System.out.println("No hay abonados en la zona.");
+			
+			return TipoRet.OK;
+		}
+		else return TipoRet.ERROR1;
 	}
-
+	
 }
