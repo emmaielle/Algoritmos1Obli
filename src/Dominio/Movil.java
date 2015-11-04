@@ -16,7 +16,7 @@ public class Movil implements Comparable<Movil> {
 	
 	private Estado estado;
 	
-	private ListaSEIni choferes;
+	public ListaOrd choferes;
 	private ListaOrd llamados;
 	private Zona ubicacion;
 	
@@ -86,4 +86,12 @@ public class Movil implements Comparable<Movil> {
 	public Zona getUbicacion(){
 		return this.ubicacion;
 	}
+	
+//	public void setChoferes(ListaOrd choferes){
+//		this.choferes = choferes;
+//	}
+//	
+//	public ListaOrd getChoferes(){
+//		return this.choferes;
+//	}
 }

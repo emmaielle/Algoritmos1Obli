@@ -39,6 +39,16 @@ public class ListaOrd implements ILista {
 //	            borrarInicio();
     }
     
+	@Override
+	public Object recuperar(Object dato){
+		NodoLista aux = inicio;
+		while(aux != null){
+			if (aux.getDato().equals(dato)) return aux.getDato();
+			aux = aux.getSig();
+		}
+		return null;
+	}
+	
     //moi
 	@Override
     public void borrarInicio(){

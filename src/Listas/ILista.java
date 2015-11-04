@@ -9,4 +9,6 @@ public interface ILista extends Iterable<Object>{
 	public void vaciar();
 	
 	public void borrarInicio();
+	
+	public Object recuperar(Object dato);
 }

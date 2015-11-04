@@ -68,6 +68,16 @@ public class ListaSEIni implements ILista{
     }
 	
 	@Override
+	public Object recuperar(Object dato){
+		NodoLista aux = inicio;
+		while(aux != null){
+			if (aux.getDato().equals(dato)) return aux.getDato();
+			aux = aux.getSig();
+		}
+		return null;
+	}
+    
+	@Override
 	public Iterator<Object> iterator() {
 		return new Iterator<Object>() {
 			

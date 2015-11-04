@@ -12,7 +12,7 @@ public class Sistema implements ISistema {
 	ListaSEIni zonas;
 	ListaOrd moviles;
 	int cantZonas;
-	ListaSEIni abonados;
+	ListaOrd abonados;
 
 	@Override
 	public TipoRet crearSistemaSeguridad(int cantZonas) {
@@ -148,7 +148,7 @@ public class Sistema implements ISistema {
 	public Movil buscarMovilReturnIt(String movilID){
 		for (Object o: moviles){
 			Movil m = (Movil) o;
-			if (m.getId()== movilID) return m;
+			if (m.getId().equals(movilID)) return m;
 		}
 		return null;
 	}
@@ -332,13 +332,34 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet registrarChofer(String movilId, String nombre, String cedula) {
-		return TipoRet.NO_IMPLEMENTADA;
+		Movil m = this.buscarMovilReturnIt(movilId);
+		if (m!= null){
+			Chofer c = new Chofer();
+			c.setNombre(nombre);
+			c.setCedula(cedula);
+			m.choferes.insertar(c);
+			return TipoRet.OK;
+		}
+		else {
+			System.out.println("No existe un movil con identificador" + movilId);
+			return TipoRet.ERROR1;
+		}
 	}
 
 	@Override
 	public TipoRet eliminarChofer(String movilId, String cedula) {
-		return TipoRet.NO_IMPLEMENTADA;
-	}
+		Movil m = this.buscarMovilReturnIt(movilId);
+		Chofer c = null;// this.buscarChofer(cedula);
+		if (m!=null && c!=null){
+			 if(m.choferes.pertenece(c)){
+				 ((ListaOrd) m.choferes).borrarElemento(c);
+			 return TipoRet.OK;
+			 
+			 }
+			 else {
+				 return TipoRet.ERROR1;
+			 }
+		}	}
 
 	@Override
 	public TipoRet informeChoferes(String movilId) {
@@ -359,7 +380,7 @@ public class Sistema implements ISistema {
 		if (zona != null){
 			if (buscarAbonado(abonadoID) == null){
 				Abonado ab = new Abonado(abonadoID, abonadoNombre, abonadoDireccion, abonadoTel, zona);
-				if (this.abonados == null) this.abonados = new ListaSEIni();
+				if (this.abonados == null) this.abonados = new ListaOrd(new AbonadoComparator());
 				this.abonados.insertar(ab);
 				return TipoRet.OK;
 			}
@@ -378,7 +399,18 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet eliminarAbonado(int abonadoId) {
-		return TipoRet.NO_IMPLEMENTADA;
+		for (Object o : this.abonados){
+			Abonado abo = (Abonado) o;
+			if (abo.getId() == abonadoId){
+				abonados.borrarElemento(abo);
+				return TipoRet.OK;
+			}
+			else {
+				System.out.println("No existe un abonado con identificador:" +abonadoId);
+				return TipoRet.ERROR1;
+			}
+		}	
+		return TipoRet.OK; // arreglar aca
 	}
 
 	@Override
