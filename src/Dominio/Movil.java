@@ -36,6 +36,17 @@ public class Movil implements Comparable<Movil> {
 		this.llamados.agregarFinal(zona);
 	}
 	
+	
+	public Chofer buscarChofer(String cedula){
+		for (Object o: choferes){
+			Chofer c = (Chofer) o;
+			if (c.getCedula().equals(cedula)){
+				return c;
+			}
+		}
+		return null;
+	}		
+	
 	public void printInforme(){
 		if (!this.choferes.esVacia()){
 			for (Object o : this.choferes){

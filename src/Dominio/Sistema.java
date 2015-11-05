@@ -348,18 +348,16 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet eliminarChofer(String movilId, String cedula) {
-		Movil m = this.buscarMovilReturnIt(movilId);
-		Chofer c = null;// this.buscarChofer(cedula);
-		if (m!=null && c!=null){
-			 if(m.choferes.pertenece(c)){
-				 ((ListaOrd) m.choferes).borrarElemento(c);
-			 return TipoRet.OK;
-			 
-			 }
-			 else {
-				 return TipoRet.ERROR1;
-			 }
-		}	}
+		Movil m = buscarMovilReturnIt(movilId);
+		if (m != null){
+			// saque el controlar que el chofer no sea null porque en una pregunta de foro dice que lo tomes como PRE
+			Chofer cho = m.buscarChofer(cedula);
+			m.choferes.borrarElemento(cho);
+			return TipoRet.OK;
+		}
+		else return TipoRet.ERROR1;
+		
+	}
 
 	@Override
 	public TipoRet informeChoferes(String movilId) {
