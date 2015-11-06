@@ -38,7 +38,7 @@ public interface ISistema {
 	// POS: Imprime los móviles ordenados según movilId, su estado y la zona donde se encuentra. 
 	public TipoRet informeMovil();
 
-	// PRE: Se asume que zonaID es un id válido de una zona existente
+	// PRE: No hay prevondiciones?
 	// POS: Imprime todos los móviles disponibles que se encuentran en la zona zonaID (ordenados por movilId de forma ascendente)
 	public TipoRet informeMovil(int zonaID); 
 

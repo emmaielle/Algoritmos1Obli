@@ -1,7 +1,6 @@
 package Dominio;
 
 import Listas.ListaOrd;
-import Listas.ListaSEIni;
 import Listas.MovilComparator;
 
 public class Movil implements Comparable<Movil> {

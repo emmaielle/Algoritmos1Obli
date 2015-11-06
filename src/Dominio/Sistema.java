@@ -17,40 +17,18 @@ public class Sistema implements ISistema {
 	@Override
 	public TipoRet crearSistemaSeguridad(int cantZonas) {
 		//New de listas, inicializacion de cantZonas
-		zonas = new ListaSEIni();
-		moviles = new ListaOrd(new MovilComparator());
 		
-		Zona z = new Zona ();
-		z.setNombre("Piedras Blancas");
-		z.setId(00);
-		zonas.insertar(z);
-		
-		Zona z1 = new Zona ();
-		z1.setNombre("La Comercial");
-		z1.setId(01);		
-		zonas.insertar(z1);
-		
-		Zona z2 = new Zona();
-		z2.setNombre("Carrasco");
-		z2.setId(02);
-		zonas.insertar(z2);
-		
-		Zona z3 = new Zona();
-		z3.setNombre("Pocitos");
-		z3.setId(03);
-		zonas.insertar(z3);
-		
-		Zona z4 = new Zona();
-		z4.setNombre("Paso de la Arena");
-		z4.setId(04);
-		zonas.insertar(z4);
-		
-		Zona z5 = new Zona();
-		z5.setNombre("Cordon");
-		z5.setId(05);
-		zonas.insertar(z5);
-		
-		return TipoRet.OK;
+		if (cantZonas >= 1){
+			zonas = new ListaSEIni();
+			moviles = new ListaOrd(new MovilComparator());
+			abonados = new ListaOrd(new AbonadoComparator());
+			this.cantZonas = cantZonas;
+			return TipoRet.OK;
+		}
+		else {
+			System.out.println("La cantidad de zonas es inferior a 1.");
+			return TipoRet.ERROR1;
+		}
 	}
 
 	@Override
@@ -64,8 +42,14 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet registrarMovil(String movilID, int zonaID) {
-		if (this.buscarZona(zonaID) == null) return TipoRet.ERROR1;
-		if (buscarMovil(movilID).equals(TipoRet.OK)) return TipoRet.ERROR2;
+		if (this.buscarZona(zonaID) == null) {
+			System.out.println("La zona " + zonaID + " no existe.");
+			return TipoRet.ERROR1;
+		}
+		if (buscarMovil(movilID).equals(TipoRet.OK)) {
+			System.out.println("Ya existe una móvil con identificador " + movilID +".");
+			return TipoRet.ERROR2;
+		}
 		
 		Movil mov = new Movil(movilID, this.buscarZona(zonaID));
 		moviles.insertar((Object) mov);
@@ -77,13 +61,15 @@ public class Sistema implements ISistema {
 	public TipoRet deshabilitarMovil(String movilID) {
 		Movil m = this.buscarMovilReturnIt(movilID);
 		if (m == null) {
-			System.out.println("No existe un movil con identificador" + movilID);
+			System.out.println("No existe un movil con identificador " + movilID + ".");
 			return TipoRet.ERROR1;
 		}
 		if (m.getEstado().equals(Estado.NO_DISPONIBLE)) {
+			System.out.println("El móvil " + movilID + " ya está en estado NO_DISPONIBLE.");
 			return TipoRet.ERROR2;
 		}
 		if (m.getEstado().equals(Estado.ATENDIENDO_LLAMADO)){
+			System.out.println("No es posible deshabilitar el móvil " + movilID + ".");
 			return TipoRet.ERROR3;
 		}
 		else {
@@ -96,15 +82,15 @@ public class Sistema implements ISistema {
 	public TipoRet habilitarMovil(String movilID) {
 		Movil m = this.buscarMovilReturnIt(movilID);
 		if (m == null){
-			System.out.println("No existe un movi con identificador" + movilID);
+			System.out.println("No existe un móvil con identificador " + movilID);
 			return TipoRet.ERROR1;
 		}
 		if (m.getEstado().equals(Estado.DISPONIBLE)){
-			System.out.println("El movil" + movilID + "ya esta habilitado");
+			System.out.println("El móvil " + movilID + " ya esta habilitado.");
 			return TipoRet.ERROR2;
 		}
 		if (m.getEstado().equals(Estado.ATENDIENDO_LLAMADO)){
-			System.out.println("Esta en viaje, no es posible habilitar el movil" + movilID + "ya esta habilitado");
+			System.out.println("Está en viaje, no es posible habilitar el móvil " + movilID + ", ya esta habilitado.");
 			return TipoRet.ERROR3;
 		}
 		else {
@@ -117,15 +103,19 @@ public class Sistema implements ISistema {
 	public TipoRet eliminarMovil(String movilID) {
 		Movil mov = this.buscarMovilReturnIt(movilID); 
 		if (mov != null){
-			if (mov.getEstado().equals(Estado.NO_DISPONIBLE)) return TipoRet.ERROR2;
-			if (mov.getEstado().equals(Estado.ATENDIENDO_LLAMADO)) return TipoRet.ERROR2;
-		
+			if (mov.getEstado().equals(Estado.NO_DISPONIBLE) || mov.getEstado().equals(Estado.ATENDIENDO_LLAMADO)) {
+				System.out.println("No es posible eliminar el móvil " + movilID + ", está en viaje");
+				return TipoRet.ERROR2;
+			}
 			moviles.borrarElemento(mov);
 			// toma la zona donde esta actualmente, y lo quita de su lista de moviles
 			mov.getLlamados().borrarElemento(mov);
 			return TipoRet.OK;
 		}
-		else return TipoRet.ERROR1;
+		else {
+			System.out.println("No existe un móvil con identificador " + movilID + ".");
+			return TipoRet.ERROR1;
+		}
 	}
 
 	// incompleto
@@ -133,7 +123,7 @@ public class Sistema implements ISistema {
 	public TipoRet buscarMovil(String movilId) {
 		Movil m = this.buscarMovilReturnIt(movilId);
 		if (m == null){
-			System.out.println("No existe un movil con identificador" + movilId);
+			System.out.println("No existe un móvil con identificador " + movilId + ".");
 			return TipoRet.ERROR1;
 		}
 		else {
@@ -168,8 +158,12 @@ public class Sistema implements ISistema {
 	@Override
 	public TipoRet informeMovil(int zonaID) {
 		Zona z = this.buscarZona(zonaID);
-		z.informeMovil();
-		return TipoRet.OK;
+		if (z != null){
+			z.informeMovil();
+			return TipoRet.OK;
+		}
+		System.out.println("La zona " + zonaID + " no existe.");
+		return TipoRet.ERROR1;
 	}
 
 	@Override
@@ -182,9 +176,15 @@ public class Sistema implements ISistema {
 				m.recibirLlamado(z);
 				return TipoRet.OK;
 			}
-			else return TipoRet.ERROR2;
+			else {
+				System.out.println("No existe un móvil con identificador " + movilID + ".");
+				return TipoRet.ERROR2;
+			}
 		}
-		else return TipoRet.ERROR1;
+		else {
+			System.out.println("La zona " + zonaID + " no existe.");
+			return TipoRet.ERROR1;
+		}
 		
 	}
 
@@ -195,7 +195,20 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet agregarZona(String zonaNombre) {
+		
+		//aca hay que controlar que no se pase del numero maximo cantZonas, y sino que no la agregue
+		// if cantzonas > listaZonas.count --> agregar
+		
+//		Zona z5 = new Zona();
+//		z5.setNombre("Cordon");
+//		z5.setId(05);
+//		zonas.insertar(z5);
+//		
+		
 		return TipoRet.NO_IMPLEMENTADA;
+		
+		// aca es donde se crean las zonas, por eso borre todo lo otro, que lo pase a la clase de testing
+		
 	}
 
 	@Override
@@ -232,17 +245,29 @@ public class Sistema implements ISistema {
 					rut.setMinutosViaje(minutosViaje);
 					return TipoRet.OK;
 				}
-				else return TipoRet.ERROR3;
+				else {
+					System.out.println("La duración del viaje debe ser mayor que 0.");
+					return TipoRet.ERROR3;
+				}
 			}
-			else return TipoRet.ERROR2;
+			else {
+				System.out.println("La zona "+ zonaDestino + " no existe.");
+				return TipoRet.ERROR2;
+			}
 		}
-		else return TipoRet.ERROR1;
+		else {
+			System.out.println("La zona "+ zonaOrigen + "no existe.");
+			return TipoRet.ERROR1;
+		}
 	}
 
 	@Override
 	public TipoRet movilMasCercana(int zonaID) {
 		Zona z = this.buscarZona(zonaID);
-		if (z == null) return TipoRet.ERROR1;
+		if (z == null) {
+			System.out.println("La zona "+ zonaID + " no existe.");
+			return TipoRet.ERROR1;
+		}
 		
 		int tiempo;
 		String sMovil;
@@ -250,7 +275,7 @@ public class Sistema implements ISistema {
 			ListaOrd movs = z.getMoviles();
 			if (!movs.esVacia()) {
 				tiempo = 0;
-				Movil m = (Movil) movs.devolverPrimero(); //asegurar que se pueda sacar el primero alfabeticamente
+				Movil m = (Movil) movs.devolverPrimero(); 
 				sMovil = m.getId();
 			}
 			else {
@@ -284,18 +309,24 @@ public class Sistema implements ISistema {
 			if (zDestino != null){
 				//----------
 				System.out.println("Ruta más rápida:");
-				this.rutaMasRapidaREC(zOrigen, zonaDestino, 0);
+				this.rutaMasRapidaREC(zOrigen, zonaDestino, 0, new ListaSEIni());
 				
 				//----------
 				return TipoRet.OK;
 			}
-			else return TipoRet.ERROR2;
+			else {
+				System.out.println("La zona " + zonaDestino + " no existe.");
+				return TipoRet.ERROR2;
+			}
 		}
-		else return TipoRet.ERROR1;
+		else {
+			System.out.println("La zona "+ zonaOrigen + " no existe.");
+			return TipoRet.ERROR1;
+		}
 	}
 	
 	// destino se mantiene
-	public void rutaMasRapidaREC(Zona zOrigen, int zDestino, int tiempoAcumulado){ 
+	public void rutaMasRapidaREC(Zona zOrigen, int zDestino, int tiempoAcumulado, ListaSEIni caminoRecorrido){ 
 		// cuando empieza 
 		if (tiempoAcumulado == 0) {
 			System.out.println(zOrigen.getNombre() + " - 0");
@@ -306,13 +337,22 @@ public class Sistema implements ISistema {
 			for (Object o : zOrigen.getEsOrigenDeRutas()){
 				Ruta ruta = (Ruta) o;
 				Zona zAux = ruta.getDestino();
-				if (ruta.getMinutosViaje() < t && zAux.getId() != zOrigen.getId()){ // la 2da condicion está mal, no hace lo que necesito
-					t = tiempoAcumulado + ruta.getMinutosViaje();
-					z = zAux;
+				if (ruta.getMinutosViaje() < t){
+					boolean yaPaso = false;
+					for (Object ob : caminoRecorrido){
+						Zona zLoop = (Zona) ob;
+						if (zLoop.equals(zAux)) yaPaso = true;
+					}
+					if (!yaPaso)
+					{
+						t = tiempoAcumulado + ruta.getMinutosViaje();
+						z = zAux;
+						caminoRecorrido.agregarFinal(z);
+					}
 				}
 			}
 			System.out.println(z.getNombre() + " - " + t);
-			rutaMasRapidaREC(z, zDestino, t);
+			rutaMasRapidaREC(z, zDestino, t, caminoRecorrido);
 		}
 	}
 
@@ -341,7 +381,7 @@ public class Sistema implements ISistema {
 			return TipoRet.OK;
 		}
 		else {
-			System.out.println("No existe un movil con identificador" + movilId);
+			System.out.println("No existe un móvil con identificador " + movilId + ".");
 			return TipoRet.ERROR1;
 		}
 	}
@@ -355,7 +395,10 @@ public class Sistema implements ISistema {
 			m.choferes.borrarElemento(cho);
 			return TipoRet.OK;
 		}
-		else return TipoRet.ERROR1;
+		else {
+			System.out.println("No existe un móvil con identificador "+ movilId + ".");
+			return TipoRet.ERROR1;
+		}
 		
 	}
 
@@ -369,7 +412,10 @@ public class Sistema implements ISistema {
 			
 			return TipoRet.OK;
 		}
-		else return TipoRet.ERROR1;
+		else {
+			System.out.println("No existe un móvil con identificador " +  movilId + ".");
+			return TipoRet.ERROR1;
+		}
 	}
 
 	@Override
@@ -382,9 +428,15 @@ public class Sistema implements ISistema {
 				this.abonados.insertar(ab);
 				return TipoRet.OK;
 			}
-			else return TipoRet.ERROR2;
+			else {
+				System.out.println("Ya existe un abonado con identificador " + abonadoID + ".");
+				return TipoRet.ERROR2;
+			}
 		}
-		else return TipoRet.ERROR1;
+		else {
+			System.out.println("La zona " + zonaID + " no existe.");
+			return TipoRet.ERROR1;
+		}
 		
 	}
 	
@@ -395,20 +447,22 @@ public class Sistema implements ISistema {
 		return null;
 	}
 
+	// (moira) lo modifique porque iba a andar mal
 	@Override
 	public TipoRet eliminarAbonado(int abonadoId) {
+		boolean encontro = false;
 		for (Object o : this.abonados){
 			Abonado abo = (Abonado) o;
 			if (abo.getId() == abonadoId){
 				abonados.borrarElemento(abo);
-				return TipoRet.OK;
+				encontro = true;
 			}
-			else {
-				System.out.println("No existe un abonado con identificador:" +abonadoId);
-				return TipoRet.ERROR1;
-			}
-		}	
-		return TipoRet.OK; // arreglar aca
+		}
+		if (!encontro) {
+			System.out.println("No existe un abonado con identificador " + abonadoId + ".");
+			return TipoRet.ERROR1;
+		}
+		else return TipoRet.OK;
 	}
 
 	@Override
@@ -433,7 +487,10 @@ public class Sistema implements ISistema {
 			
 			return TipoRet.OK;
 		}
-		else return TipoRet.ERROR1;
+		else {
+			System.out.println("La zona " + zonaID + " no existe.");
+			return TipoRet.ERROR1;
+		}
 	}
 	
 }

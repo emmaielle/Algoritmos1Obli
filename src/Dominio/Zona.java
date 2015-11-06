@@ -2,7 +2,6 @@ package Dominio;
 
 import Dominio.Movil.Estado;
 import Listas.ListaOrd;
-import Listas.ListaSEIni;
 
 public class Zona {
 
