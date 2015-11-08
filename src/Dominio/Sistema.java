@@ -6,6 +6,7 @@ import Listas.AbonadoComparator;
 import Listas.ListaOrd;
 import Listas.ListaSEIni;
 import Listas.MovilComparator;
+import Listas.ZonaComparator;
 
 public class Sistema implements ISistema {
 
@@ -213,7 +214,18 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet listarZonas() {
-		return TipoRet.NO_IMPLEMENTADA;
+		if (!this.zonas.esVacia()){
+			for (Object o : zonas){
+				Zona z = (Zona) o;
+				//??? que?
+				ListaOrd zonas = new ListaOrd(new ZonaComparator());
+				System.out.println(z.getId() +"-"+ z.getNombre());
+			}	
+		}				
+		else {
+			System.out.println("No existen zonas en el mapa");
+		}
+		return TipoRet.OK;
 	}
 	
 	public Zona buscarZona(int idZona){
@@ -226,7 +238,37 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet agregarRuta(int zonaOrigen, int zonaDestino, int minutosViaje) {
-		return TipoRet.NO_IMPLEMENTADA;
+		Zona z = buscarZona(zonaOrigen);
+		Zona z2 = buscarZona(zonaDestino);
+		
+		// revisar
+		if (z!= null && z2 != null && minutosViaje > 0)
+		{
+			Ruta r = new Ruta(z, z2, minutosViaje);
+			z.getEsOrigenDeRutas().agregarInicio(z);
+			z.getEsOrigenDeRutas().agregarFinal(z2);
+
+			Ruta inversa = new Ruta (z2, z, minutosViaje);
+			z.getEsOrigenDeRutas().agregarInicio(zonaDestino);
+			z.getEsOrigenDeRutas().agregarFinal(zonaOrigen);//inverso de la ruta
+			return TipoRet.OK;
+		}
+		else 
+		{
+			if (buscarZona(zonaOrigen) == null){
+				System.out.println("La Zona" + zonaOrigen + "No existe");
+				return TipoRet.ERROR1;
+			}
+	
+			if (buscarZona(zonaDestino)== null){
+				System.out.println("La Zona" + zonaDestino + "No existe");
+				return TipoRet.ERROR2;
+			}
+			if (minutosViaje<=0){
+				System.out.println("La duracion del viaje debe ser mayor que 0");
+				return TipoRet.ERROR3;
+			}
+		}
 	}
 
 	@Override
