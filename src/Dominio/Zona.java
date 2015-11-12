@@ -6,17 +6,29 @@ import Listas.ListaOrd;
 public class Zona {
 
 	private int id;
+	private static int ultId = 0;
 	private String nombre;
 	private ListaOrd esOrigenDeRutas;
 	private ListaOrd moviles;
 	
+	public Zona(String nombre){
+		this.id = ultId++; // check for errors FIXME
+		this.nombre = nombre;
+	}
+	
 	public void informeMovil(){
 		System.out.println("Informe de móviles en: " + this.id + "-" + this.nombre);
 		if (!this.moviles.esVacia()){
+			int cantDisp = 0;
 			for (Object o : moviles){
 				Movil m = (Movil) o;
-				if (m.getEstado().equals(Estado.DISPONIBLE))System.out.println(m.getId());
+				if (m.getEstado().equals(Estado.DISPONIBLE)){
+					System.out.println(m.getId());
+					cantDisp++;
+				}
 			}
+			if (cantDisp == 0) System.out.println("No hay móviles disponibles en la zona.");
+			else System.out.println("Total móviles disponibles: " + cantDisp);
 		}
 		else System.out.println("Esta zona no tiene móviles");
 	}
@@ -40,7 +52,7 @@ public class Zona {
 				// ME QUEDO CON LA RUTA DE MENOR TIEMPO Y EL PRIMER MOVIL QUE SAQUE DE LA ZONA DE DESTINO DE ESA RUTA
 				if (menorTiempo > r.getMinutosViaje()) {
 					menorTiempo = r.getMinutosViaje();
-					oMovil = (Movil)r.getDestino().moviles.devolverPrimero(); // aca lo cambié	 
+					oMovil = (Movil)r.getDestino().moviles.devolverPrimero();  
 				}
 			}
 		}

@@ -11,4 +11,8 @@ public interface ILista extends Iterable<Object>{
 	public void borrarInicio();
 	
 	public Object recuperar(Object dato);
+		
+	public int largo();
+	
+	public ILista clon();
 }

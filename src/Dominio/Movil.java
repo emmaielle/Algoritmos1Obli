@@ -1,7 +1,7 @@
 package Dominio;
 
 import Listas.ListaOrd;
-import Listas.MovilComparator;
+import Listas.ListaSEIni;
 
 public class Movil implements Comparable<Movil> {
 
@@ -16,13 +16,13 @@ public class Movil implements Comparable<Movil> {
 	private Estado estado;
 	
 	public ListaOrd choferes;
-	private ListaOrd llamados;
+	private ListaSEIni llamados;
 	private Zona ubicacion;
 	
 	public Movil(String id, Zona ubicacion){
 		this.id = id;
 		this.estado = Estado.DISPONIBLE;
-		this.llamados = new ListaOrd(new MovilComparator());
+		this.llamados = new ListaSEIni();
 		this.ubicacion = ubicacion;
 	}
 	
@@ -55,15 +55,9 @@ public class Movil implements Comparable<Movil> {
 		else System.out.println("No posee choferes habilitados");
 	}
 	
-	// si disponible o no_disponible, --> cuando atienda un nuevo llamado, se le elimina el ultimo llamado que atendió, que es el 
-	// que da la información de la zona en la que se encuentra
-	// PRE: La ubicación del móvil es igual al primer item de la lista de llamados que posee, que es el que 
 	@Override
 	public String toString(){
-		// el primero es el ultimo que atendió y por ende donde está ahora (todavia no se elimino hasta que atienda uno nuevo)
-		Zona oUbicacion = (Zona) this.ubicacion;
-		String sUbicacion = oUbicacion.getNombre();
-		
+		String sUbicacion = this.ubicacion.getNombre();
 		String ret = this.id + "-" + this.estado.toString();
 		if (!this.estado.equals(Estado.ATENDIENDO_LLAMADO)) return ret + "-" + sUbicacion;
 		return ret;
@@ -77,7 +71,7 @@ public class Movil implements Comparable<Movil> {
 		this.id = id;
 	}
 	
-	public ListaOrd getLlamados(){
+	public ListaSEIni getLlamados(){
 		return this.llamados;
 	}
 	
