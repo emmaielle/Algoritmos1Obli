@@ -49,7 +49,7 @@ public interface ISistema {
 	// POS: Se agendarán llamados al móvil dejando últimos los más recientes.
 	public TipoRet recibirLlamado(String movilID, int zonaID);
 
-	// PRE: No hay precondiciones?
+	// PRE: La lista llamados tiene al menos un elemento
 	// POS: cambia la ubicación del móvil asignándolo a la zona zonaID, lo quita de la zona donde se encontraba y quita la zona de la lista de llamados del movil
 	public TipoRet cambiarUbicacion(String movilID, int zonaID);
 

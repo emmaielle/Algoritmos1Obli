@@ -38,6 +38,7 @@ public class Sistema implements ISistema {
 	public TipoRet destruirSistemaSeguridad() {
 		// esto será asi, o con solo un "= null" ??? <--------- TODO
 		zonas.vaciar();
+		Zona.setUltId(0);
 		moviles.vaciar();
 		abonados.vaciar();
 		cantZonas = 0;
@@ -52,20 +53,20 @@ public class Sistema implements ISistema {
 			System.out.println("La zona " + zonaID + " no existe.");
 			return TipoRet.ERROR1;
 		}
-		if (buscarMovil(movilID).equals(TipoRet.OK)) {
+		if (returnMovil(movilID) != null) {
 			System.out.println("Ya existe una móvil con identificador " + movilID +".");
 			return TipoRet.ERROR2;
 		}
 		
 		Movil mov = new Movil(movilID, zona);
 		moviles.insertar(mov);
-		zona.getMoviles().insertar(mov); // esto funciona? o es solo una referencia y no se puede hacer asi? <------ TODO
+		zona.insertarMovil(mov); 
 		return TipoRet.OK;
 	}
 
 	@Override
 	public TipoRet deshabilitarMovil(String movilID) {
-		Movil m = this.buscarMovilReturnIt(movilID);
+		Movil m = this.returnMovil(movilID);
 		if (m == null) {
 			System.out.println("No existe un movil con identificador " + movilID + ".");
 			return TipoRet.ERROR1;
@@ -86,7 +87,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet habilitarMovil(String movilID) {
-		Movil m = this.buscarMovilReturnIt(movilID); // chequear que le cambie correctamente el estado cuando busco el movil desde una de las listas TODO
+		Movil m = this.returnMovil(movilID); // chequear que le cambie correctamente el estado cuando busco el movil desde una de las listas TODO
 		if (m == null){
 			System.out.println("No existe un móvil con identificador " + movilID + ".");
 			return TipoRet.ERROR1;
@@ -107,7 +108,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet eliminarMovil(String movilID) {
-		Movil mov = this.buscarMovilReturnIt(movilID); 
+		Movil mov = this.returnMovil(movilID); 
 		if (mov != null){
 			if (mov.getEstado().equals(Estado.NO_DISPONIBLE) || mov.getEstado().equals(Estado.ATENDIENDO_LLAMADO)) {
 				System.out.println("No es posible eliminar el móvil " + movilID + ", está en viaje");
@@ -127,7 +128,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet buscarMovil(String movilId) {
-		Movil m = this.buscarMovilReturnIt(movilId);
+		Movil m = this.returnMovil(movilId);
 		if (m == null){
 			System.out.println("No existe un móvil con identificador " + movilId + ".");
 			return TipoRet.ERROR1;
@@ -141,8 +142,7 @@ public class Sistema implements ISistema {
 		}
 	}
 
-	// TODO refactor method name
-	public Movil buscarMovilReturnIt(String movilID){
+	public Movil returnMovil(String movilID){
 		for (Object o: moviles){
 			Movil m = (Movil) o;
 			if (m.getId().equals(movilID)) return m;
@@ -176,7 +176,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet recibirLlamado(String movilID, int zonaID) {
-		Movil m = this.buscarMovilReturnIt(movilID);
+		Movil m = this.returnMovil(movilID);
 		
 		Zona z = this.buscarZona(zonaID); 
 		if (z != null){
@@ -198,36 +198,43 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet cambiarUbicacion(String movilID, int zonaID) {
-		Movil m = this.buscarMovilReturnIt(movilID);
+		Movil m = this.returnMovil(movilID);
 		Zona ubicacionPrevia = m.getUbicacion();
 		Zona z = this.buscarZona(zonaID);
 		
-		Zona siguiente = (Zona)m.getLlamados().getInicio().getDato(); 
-		if (z != null){
-			// apparently, m can never be null... ???? TODO
-			if (m != null){
-				if (siguiente != z){
-					System.out.println("La ubicacion no es la del proximo llamado.");
-					return TipoRet.ERROR3;
+		if (m.getLlamados().largo() != 0){
+			Zona siguiente = (Zona)m.getLlamados().getInicio().getDato(); 
+			if (z != null){
+				// apparently, m can never be null... ???? TODO
+				if (m != null){
+					if (siguiente != z){
+						System.out.println("La ubicacion no es la del proximo llamado.");
+						return TipoRet.ERROR3;
+					}
+					else {	
+						// cambia attr ubicacion del movil
+						m.setUbicacion(z);
+						// elimina al movil de la zona anterior
+						ubicacionPrevia.getMoviles().borrarElemento(m);
+						// elimina la zona de la pila de llamados (primer item)
+						m.getLlamados().borrarInicio();
+						return TipoRet.OK;
+					}
+				} 
+				else {
+					System.out.println("No existe un movil con identificador" + movilID + ".");
+					return TipoRet.ERROR2;
 				}
-				else {	
-					// cambia attr ubicacion del movil
-					m.setUbicacion(z);
-					// elimina al movil de la zona anterior
-					ubicacionPrevia.getMoviles().borrarElemento(m);
-					// elimina la zona de la pila de llamados (primer item)
-					m.getLlamados().borrarInicio();
-					return TipoRet.OK;
-				}
-			} 
-			else {
-				System.out.println("No existe un movil con identificador" + movilID + ".");
-				return TipoRet.ERROR2;
+			} else {
+				System.out.println("La zona" + zonaID + "no existe.");
+				return TipoRet.ERROR1;
 			}
-		} else {
-			System.out.println("La zona" + zonaID + "no existe.");
-			return TipoRet.ERROR1;
 		}
+		else {
+			System.out.println("El móvil no tiene llamados");
+			return TipoRet.OK;
+		}
+	
 
 	}
 	
@@ -475,7 +482,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet registrarChofer(String movilId, String nombre, String cedula) {
-		Movil m = this.buscarMovilReturnIt(movilId);
+		Movil m = this.returnMovil(movilId);
 		if (m!= null){
 			Chofer c = new Chofer();
 			c.setNombre(nombre);
@@ -491,7 +498,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet eliminarChofer(String movilId, String cedula) {
-		Movil m = buscarMovilReturnIt(movilId);
+		Movil m = returnMovil(movilId);
 		if (m != null){
 			Chofer cho = m.buscarChofer(cedula);
 			m.choferes.borrarElemento(cho);
@@ -506,7 +513,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet informeChoferes(String movilId) {
-		Movil mov = this.buscarMovilReturnIt(movilId);
+		Movil mov = this.returnMovil(movilId);
 		if (mov != null){
 			System.out.println("Informe Choferes de " + movilId);
 			

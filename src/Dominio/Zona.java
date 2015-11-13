@@ -2,22 +2,26 @@ package Dominio;
 
 import Dominio.Movil.Estado;
 import Listas.ListaOrd;
+import Listas.ListaSEIni;
+import Listas.MovilComparator;
 
 public class Zona {
 
 	private int id;
 	private static int ultId = 0;
 	private String nombre;
-	private ListaOrd esOrigenDeRutas;
+	private ListaSEIni esOrigenDeRutas;
 	private ListaOrd moviles;
 	
 	public Zona(String nombre){
 		this.id = ultId++; // check for errors FIXME
 		this.nombre = nombre;
+		this.moviles = new ListaOrd(new MovilComparator());
+		this.esOrigenDeRutas = new ListaSEIni();
 	}
 	
 	public void informeMovil(){
-		System.out.println("Informe de móviles en: " + this.id + "-" + this.nombre);
+		System.out.println("Informe de móviles en: " + this.id + " - " + this.nombre);
 		if (!this.moviles.esVacia()){
 			int cantDisp = 0;
 			for (Object o : moviles){
@@ -77,6 +81,10 @@ public class Zona {
 		System.out.println("Móvils no disponibles: " + movNOdisp);
 	}
 
+	public void insertarMovil(Movil mov){
+		this.moviles.insertar(mov);
+	}
+	
 	public String getNombre(){
 		return this.nombre;
 	}
@@ -97,7 +105,14 @@ public class Zona {
 		return this.moviles;
 	}
 	
-	public ListaOrd getEsOrigenDeRutas(){
+	public ListaSEIni getEsOrigenDeRutas(){
 		return this.esOrigenDeRutas;
+	}
+	
+	public static void setUltId(int id){
+		Zona.ultId = id;
+	}
+	public static int getUltId(){
+		return Zona.ultId;
 	}
 }
