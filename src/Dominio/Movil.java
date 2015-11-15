@@ -1,5 +1,6 @@
 package Dominio;
 
+import Listas.ChoferComparator;
 import Listas.ListaOrd;
 import Listas.ListaSEIni;
 
@@ -24,6 +25,7 @@ public class Movil implements Comparable<Movil> {
 		this.estado = Estado.DISPONIBLE;
 		this.llamados = new ListaSEIni();
 		this.ubicacion = ubicacion;
+		this.choferes = new ListaOrd(new ChoferComparator());
 	}
 	
 	@Override

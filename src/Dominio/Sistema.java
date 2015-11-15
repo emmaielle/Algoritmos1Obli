@@ -38,7 +38,7 @@ public class Sistema implements ISistema {
 	public TipoRet destruirSistemaSeguridad() {
 		// esto será asi, o con solo un "= null" ??? <--------- TODO
 		zonas.vaciar();
-		Zona.setUltId(0);
+		Zona.setUltId(1);
 		moviles.vaciar();
 		abonados.vaciar();
 		cantZonas = 0;
@@ -193,25 +193,23 @@ public class Sistema implements ISistema {
 			System.out.println("La zona " + zonaID + " no existe.");
 			return TipoRet.ERROR1;
 		}
-		
 	}
 
 	@Override
 	public TipoRet cambiarUbicacion(String movilID, int zonaID) {
 		Movil m = this.returnMovil(movilID);
-		Zona ubicacionPrevia = m.getUbicacion();
 		Zona z = this.buscarZona(zonaID);
 		
-		if (m.getLlamados().largo() != 0){
-			Zona siguiente = (Zona)m.getLlamados().getInicio().getDato(); 
-			if (z != null){
-				// apparently, m can never be null... ???? TODO
-				if (m != null){
+		if (z != null){
+			if (m != null){
+				if (m.getLlamados().largo() != 0){
+					Zona siguiente = (Zona)m.getLlamados().getInicio().getDato(); 
 					if (siguiente != z){
 						System.out.println("La ubicacion no es la del proximo llamado.");
 						return TipoRet.ERROR3;
-					}
-					else {	
+					} else {	
+						Zona ubicacionPrevia = m.getUbicacion();
+
 						// cambia attr ubicacion del movil
 						m.setUbicacion(z);
 						// elimina al movil de la zona anterior
@@ -222,20 +220,17 @@ public class Sistema implements ISistema {
 					}
 				} 
 				else {
-					System.out.println("No existe un movil con identificador" + movilID + ".");
-					return TipoRet.ERROR2;
+					System.out.println("El móvil no tiene llamados");
+					return TipoRet.OK;
 				}
 			} else {
-				System.out.println("La zona" + zonaID + "no existe.");
-				return TipoRet.ERROR1;
+				System.out.println("No existe un movil con identificador " + movilID + ".");
+				return TipoRet.ERROR2;
 			}
+		} else {
+			System.out.println("La zona" + zonaID + "no existe.");
+			return TipoRet.ERROR1;
 		}
-		else {
-			System.out.println("El móvil no tiene llamados");
-			return TipoRet.OK;
-		}
-	
-
 	}
 	
 	@Override
@@ -351,27 +346,32 @@ public class Sistema implements ISistema {
 			if (!movs.esVacia()) {
 				Movil m = (Movil) movs.devolverPrimero(); 
 				sMovil = m.getId();
+				Object[] oMovil = {m, sMovil};
+				movil = oMovil;
 			}
 			else {
 				movil = z.movilMasCercana();
-				sMovil = movil[0].toString();
-				tiempo = (int)movil[1];
+				if (movil[0] != null) sMovil = ((Movil)movil[0]).getId();
+				else sMovil = null;
+				if (movil[1] != null) tiempo = (int)movil[1];
 			}
 		}
 		else sMovil = null;
 		
-		System.out.println("Móvil más cercana a" + zonaID + "-" + z.getNombre());
+		System.out.println("Móvil más cercana a: " + zonaID + " - " + z.getNombre());
 		
 		if (movil != null){
 			if (sMovil != null){
 				System.out.println("Móvil: "+ sMovil);
 				System.out.println("Demora del viaje: " + String.valueOf(tiempo));
+			
+			} else {
+				System.out.println("No hay móviles en zona " + zonaID + " ni en sus zonas contiguas");
 			}
-			else System.out.println("No hay móviles creadas.");
+		
 		}
-		else {
-			System.out.println("No hay móviles en zona " + zonaID + " ni en sus zonas contiguas");
-		}
+		else System.out.println("No hay móviles creadas.");
+		
 		return TipoRet.OK;
 	}
 	
@@ -423,9 +423,21 @@ public class Sistema implements ISistema {
 				ILista retorno = rutaMasRapidaREC(((Ruta)o).getDestino().getId(), zDestino, caminoRecorrido.clon());
 				int duracion = duracion(retorno, false);
 				
+				// mejorcamino no fue elegido, o su duracion es menor que la que está guardada actualmente
 				if (mejorCamino == null || (retorno != null && duracion < mejorDuracion)){
-					mejorCamino = retorno;
-					mejorDuracion = duracion;
+					// check que no este volviendo al mismo camino en un loop
+					boolean zonaRepetida = false;
+					// getInicio porque es una lista SEInicio y los ultimos se agregan al inicio
+					Zona ultimaZona = (Zona)(((ListaSEIni)retorno).getInicio().getDato());
+					ListaSEIni aux = (ListaSEIni)retorno;
+					aux.borrarInicio();
+					for (Object o2 : aux){
+						if (((Zona)o2).getId() == ultimaZona.getId()) zonaRepetida = true;
+					}
+					if (!zonaRepetida){
+						mejorCamino = retorno;
+						mejorDuracion = duracion;
+					}
 				}
 			}
 			return mejorCamino;
@@ -446,9 +458,9 @@ public class Sistema implements ISistema {
 			Zona aux = null;
 			for (Object o: lis){
 				if (aux == null)
-					aux = (Zona) o;
+					aux = (Zona) buscarZona((int) o);
 				else {
-					Zona z = (Zona) o; 
+					Zona z = (Zona) buscarZona((int) o); 
 					if (printScreen == true) System.out.println(aux.getNombre() + " - 0");
 					
 					for (Object o2: z.getEsOrigenDeRutas()){

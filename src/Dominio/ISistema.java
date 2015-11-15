@@ -61,7 +61,7 @@ public interface ISistema {
 	// POS: Imprime en pantalla las zonas ordenadas de forma ascendente por zonaID.
 	public TipoRet listarZonas();
 	
-	// PRE: No hay precondiciones
+	// PRE: zOrigen y zDestino son diferentes
 	// POS: Ingresa la ruta desde zonaOrigen a zonaDestino con demora minutosViaje, y su recíproca. 
 	public TipoRet agregarRuta(int zonaOrigen, int zonaDestino, int minutosViaje);
 
