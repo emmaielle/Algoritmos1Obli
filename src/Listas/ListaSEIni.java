@@ -119,7 +119,7 @@ public class ListaSEIni implements ILista{
 
     @Override
     public ILista clon(){
-		ILista lis = new ListaSEIni(); // habria que hacer la clase LisSEIFin
+		ILista lis = new ListaSEIni(); 
 		NodoLista aux = inicio;
 		while (aux!=null){
 			lis.insertar(aux.getDato()); //nodo que tiene zona

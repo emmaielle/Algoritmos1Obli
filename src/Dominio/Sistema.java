@@ -385,13 +385,8 @@ public class Sistema implements ISistema {
 				//----------
 				System.out.println("Ruta más rápida:");
 				
-				if (zonaOrigen == zonaDestino) System.out.println(zOrigen.getNombre() + " - 0");
-				
-				else {
-					ILista ret = this.rutaMasRapidaREC(zonaOrigen, zonaDestino, new ListaSEIni());
-					duracion(ret, true);		
-					
-				}
+				ILista ret = this.rutaMasRapidaREC(zonaOrigen, zonaDestino, new ListaSEFin());
+				duracion(ret, true);		
 				
 				//----------
 				return TipoRet.OK;
@@ -415,63 +410,70 @@ public class Sistema implements ISistema {
 		else {
 			ILista mejorCamino = null;
 			int mejorDuracion = Integer.MAX_VALUE;
-	
+			int duracion = Integer.MAX_VALUE;
 			Zona zO = buscarZona(zOrigen);
 
-			for (Object o : zO.getEsOrigenDeRutas()){
-				
-				ILista retorno = rutaMasRapidaREC(((Ruta)o).getDestino().getId(), zDestino, caminoRecorrido.clon());
-				int duracion = duracion(retorno, false);
+			for (Object o : zO.getEsOrigenDeRutas())
+			{
+				int zNextDest = ((Ruta)o).getDestino().getId();
+				boolean caminoLoop = false;
+				for (Object o2 : caminoRecorrido){
+					Zona checkZona = buscarZona((int)((NodoLista)o2).getDato());
+					if (checkZona.equals(buscarZona(zNextDest))) {
+						caminoLoop = true;
+						break;
+					}
+					
+				}
+				if (caminoLoop) continue;
+				ILista retorno = rutaMasRapidaREC(zNextDest, zDestino, caminoRecorrido.clon());
+				if (retorno != null) duracion = duracion(retorno, false);
 				
 				// mejorcamino no fue elegido, o su duracion es menor que la que está guardada actualmente
 				if (mejorCamino == null || (retorno != null && duracion < mejorDuracion)){
-					// check que no este volviendo al mismo camino en un loop
-					boolean zonaRepetida = false;
-					// getInicio porque es una lista SEInicio y los ultimos se agregan al inicio
-					Zona ultimaZona = (Zona)(((ListaSEIni)retorno).getInicio().getDato());
-					ListaSEIni aux = (ListaSEIni)retorno;
-					aux.borrarInicio();
-					for (Object o2 : aux){
-						if (((Zona)o2).getId() == ultimaZona.getId()) zonaRepetida = true;
-					}
-					if (!zonaRepetida){
-						mejorCamino = retorno;
-						mejorDuracion = duracion;
-					}
+					mejorCamino = retorno;
+					mejorDuracion = duracion;
 				}
 			}
 			return mejorCamino;
 		}
-
 	}
+
+	
 	
 	//Metodo de la duracion
 	// voy a recibir una duracion de ILista
 	private int duracion(ILista lis, boolean printScreen){
 		
 		if (lis.largo() == 1){
-			if (printScreen == true) System.out.println(((ListaSEFin)lis).mostrarX(0) + " - 0");
+			if (printScreen == true) System.out.println( (buscarZona(((int)(((ListaSEFin)lis).getFin().getDato())))).getNombre() + " - 0");
 			return 0; 
 		}
 		else {
 			int total = 0;
 			Zona aux = null;
+			// itero sobre las zonas 
 			for (Object o: lis){
-				if (aux == null)
-					aux = (Zona) buscarZona((int) o);
-				else {
-					Zona z = (Zona) buscarZona((int) o); 
+				if (aux == null){
+					aux = (Zona) buscarZona((int) ((NodoLista)o).getDato()); // aux es el primer item (origen == 1)
 					if (printScreen == true) System.out.println(aux.getNombre() + " - 0");
-					
+				}
+				Zona z = (Zona) buscarZona((int) ((NodoLista)o).getDato()); 
+				
+				NodoLista sig = ((NodoLista) o).getSig();
+				if (sig != null){
+					Zona zSiguiente = (Zona)buscarZona((int)sig.getDato());
 					for (Object o2: z.getEsOrigenDeRutas()){
 						Ruta r = (Ruta) o2;
-					
-						if (r.getDestino().equals(aux)){
+						
+						if (r.getDestino().equals(zSiguiente)){
 							total +=r.getMinutosViaje();
-							if (printScreen == true) System.out.println(z+" - " + r.getMinutosViaje());
+							if (printScreen == true) System.out.println(zSiguiente.getNombre()+" - " + total); // do break from this loop
+							break;
 						}
 					}
 				}
+				
 			}
 			if (printScreen == true) System.out.println("Total: " + total);
 			return total; 

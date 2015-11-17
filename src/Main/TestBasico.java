@@ -482,14 +482,16 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.agregarRuta(1, 2, 5));
 			assertEquals(TipoRet.OK, s.agregarRuta(1, 6, 11));
 			assertEquals(TipoRet.OK, s.agregarRuta(2, 6, 8));
-			assertEquals(TipoRet.OK, s.agregarRuta(6, 3, 15));
+			assertEquals(TipoRet.OK, s.agregarRuta(6, 3, 5));
+			assertEquals(TipoRet.OK, s.agregarRuta(6, 4, 25));
 			assertEquals(TipoRet.OK, s.agregarRuta(3, 4, 15));
 			assertEquals(TipoRet.OK, s.agregarRuta(4, 5, 9));
 
+			assertEquals(TipoRet.OK, s.rutaMasRapida(1, 3));
+			assertEquals(TipoRet.OK, s.rutaMasRapida(1, 4));
 			assertEquals(TipoRet.ERROR1, s.rutaMasRapida(9, 3));
 			assertEquals(TipoRet.ERROR2, s.rutaMasRapida(1, 9));
 			assertEquals(TipoRet.OK, s.rutaMasRapida(1, 1));
-			assertEquals(TipoRet.OK, s.rutaMasRapida(1, 3));
 			
 		}
 		finally {

@@ -1,15 +1,32 @@
+
 package Listas;
 
 import java.util.Iterator;
 
-public class ListaSEFin implements ILista {
+public class ListaSEFin implements ILista{
 
 	public NodoLista fin;
 	
-	public void insertar(Object dato) {
-		fin = new NodoLista(dato,fin);
+	//================================================================================
+    // Overrides
+    //================================================================================
+	
+	@Override
+	public void insertar(Object o) {
+		//NodoLista nuevo= new NodoLista(n);
+        if (this.esVacia())
+        	fin = new NodoLista(o);
+        else
+        {
+            NodoLista aux=this.fin;
+            while (aux.getSig() != null)
+                aux=aux.getSig();
+            NodoLista nuevo= new NodoLista(o);
+            aux.setSig(nuevo);
+        }
+		
 	}
-
+	
 	//PRE:
     //POS: Retorna true si la lista no tiene nodos
 	@Override
@@ -19,21 +36,21 @@ public class ListaSEFin implements ILista {
         else
             return false;
       }
-	
+    
 	@Override
-	public void vaciar(){
-		 //en java alcanza con apuntar inicio y fin a null
+    public void vaciar(){
+        //en java alcanza con apuntar inicio y fin a null
         fin=null;
 //        while (inicio!=null)
 //            borrarInicio();
-	}
+    }
 	
 	@Override
-	public void borrarInicio(){
-		if (!this.esVacia()){
+    public void borrarInicio(){
+        if (!this.esVacia()){
             this.fin=this.fin.getSig();
         }
-	}
+    }
 	
 	@Override
 	public Object recuperar(Object dato){
@@ -45,7 +62,6 @@ public class ListaSEFin implements ILista {
 		return null;
 	}
 	
-	// mal
 	@Override
 	public int largo(){
 		int cont=0;
@@ -58,23 +74,11 @@ public class ListaSEFin implements ILista {
         }
         return cont;
 	}
-
-	@Override 
-	public ILista clon(){
-		ILista lis = new ListaSEFin(); // habria que hacer la clase LisSEIFin
-		NodoLista aux = fin;
-		while (aux!=null){
-			lis.insertar(aux.getDato()); //nodo que tiene zona
-			//tenemos memoria distinta que apunta al mismo objeto
-			aux = aux.getSig();
-		}
-		return lis;
-	}
-	
+    
 	@Override
 	public Iterator<Object> iterator() {
 		return new Iterator<Object>() {
-					
+			
 			private NodoLista aux = fin;
 			
 			@Override
@@ -83,8 +87,8 @@ public class ListaSEFin implements ILista {
 			}
 			
 			@Override
-			public Object next() {
-				Object actual = aux.getDato();
+			public NodoLista next() {
+				NodoLista actual = aux;
 				aux = aux.getSig();
 				return actual;
 			}
@@ -93,25 +97,33 @@ public class ListaSEFin implements ILista {
 			public boolean hasNext() {
 				return aux != null;
 			}
-					
+			
 		};
 	}
 	
-	public Object mostrarX(int i){
-        if (this.esVacia())
-            return null;
-        else  {
-            NodoLista aux = this.fin;
-            int n = 0;
-            while (aux!=null)  {
-                if (n == i) return aux.getDato();
-            	aux=aux.getSig();
-                n++;
-            }
-            return null;
-        }
+//    //PRE: 
+//    //POS: Agrega un nuevo Nodo al principio de la lista
+//    public void agregarInicio(Object o){
+//        NodoLista nuevo= new NodoLista(o);
+//        nuevo.setSig(inicio);
+//        this.inicio=nuevo;
+//        if(this.fin==null)//estoy insertando el primer nodo
+//            this.fin=nuevo;
+//        }
+//    
+
+    @Override
+    public ILista clon(){
+		ILista lis = new ListaSEFin(); 
+		NodoLista aux = fin;
+		while (aux!=null){
+			lis.insertar(aux.getDato()); //nodo que tiene zona
+			//tenemos memoria distinta que apunta al mismo objeto
+			aux = aux.getSig();
+		}
+		return lis;
 	}
-	
+    
 	//================================================================================
     // Properties
     //================================================================================
@@ -119,5 +131,9 @@ public class ListaSEFin implements ILista {
 	public NodoLista getFin(){
 		return this.fin;
 	}
-	
+
 }
+	
+	
+
+
