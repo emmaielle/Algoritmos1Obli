@@ -1,7 +1,7 @@
 
 package Listas;
 
-public interface ILista extends Iterable<Object>{
+public interface ILista extends Iterable<Object>, Cloneable{
 	public void insertar(Object dato);
 	
 	public boolean esVacia();
@@ -14,5 +14,5 @@ public interface ILista extends Iterable<Object>{
 		
 	public int largo();
 	
-	public ILista clon();
+	public ILista clone();
 }

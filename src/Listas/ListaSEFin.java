@@ -86,6 +86,9 @@ public class ListaSEFin implements ILista{
 				throw new UnsupportedOperationException();
 			}
 			
+			// el metodo next() devuelve directamente el NodoLista, porque para el metodo duracion que toma una ListaSEFin, necesito
+			// determinar el siguiente de una iteracion sin moverme a la siguiente iteracion (es decir, el i++ de las iteraciones
+			// en listas convencionales), y con las listas manuales solo sé hacerlo accediendo al nodoLista
 			@Override
 			public NodoLista next() {
 				NodoLista actual = aux;
@@ -101,24 +104,12 @@ public class ListaSEFin implements ILista{
 		};
 	}
 	
-//    //PRE: 
-//    //POS: Agrega un nuevo Nodo al principio de la lista
-//    public void agregarInicio(Object o){
-//        NodoLista nuevo= new NodoLista(o);
-//        nuevo.setSig(inicio);
-//        this.inicio=nuevo;
-//        if(this.fin==null)//estoy insertando el primer nodo
-//            this.fin=nuevo;
-//        }
-//    
-
     @Override
-    public ILista clon(){
+    public ILista clone(){
 		ILista lis = new ListaSEFin(); 
 		NodoLista aux = fin;
 		while (aux!=null){
-			lis.insertar(aux.getDato()); //nodo que tiene zona
-			//tenemos memoria distinta que apunta al mismo objeto
+			lis.insertar(aux.getDato()); 
 			aux = aux.getSig();
 		}
 		return lis;

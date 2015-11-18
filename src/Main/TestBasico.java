@@ -39,7 +39,9 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.agregarZona("La Comercial"));
 		assertEquals(TipoRet.OK, s.agregarZona("Carrasco"));
 		assertEquals(TipoRet.OK, s.agregarZona("Pocitos"));
+		System.out.println("");
 		assertEquals(TipoRet.ERROR1, s.agregarZona("Cordon"));
+		System.out.println("");
 		assertEquals(TipoRet.ERROR1, s.agregarZona("Paso de la Arena"));	
 		
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
@@ -53,6 +55,7 @@ public class TestBasico {
 
 		assertEquals(TipoRet.OK, s.crearSistemaSeguridad(4));
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.agregarZona("Piedras Blancas"));
 		assertEquals(TipoRet.OK, s.agregarZona("La Comercial"));
 		assertEquals(TipoRet.OK, s.agregarZona("Carrasco"));
@@ -74,6 +77,7 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.agregarZona("Cordon"));
 		assertEquals(TipoRet.OK, s.agregarZona("Paso de la Arena"));	
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.registrarMovil("AAG204", 2));
 		assertEquals(TipoRet.OK, s.registrarMovil("AAGUA14", 3));
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
@@ -98,7 +102,9 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.registrarMovil("AAGUA14", 3));
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
+		
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
 	}
 
@@ -119,7 +125,9 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 		assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.habilitarMovil("AAG204"));
+		
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
 	}
 
@@ -140,7 +148,9 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 		assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 		
+		System.out.println("");
 		assertEquals(TipoRet.ERROR2, s.eliminarMovil("AAG204"));
+		
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
 	}
 
@@ -161,7 +171,9 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 		assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.eliminarMovil("AAGUA14"));
+		
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
 	}
 	
@@ -182,7 +194,9 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 		assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.buscarMovil("AAGUA14"));
+		
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
 	}
 
@@ -203,7 +217,9 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 		assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.informeMovil());
+		
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
 	}
 
@@ -224,7 +240,9 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 		assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.informeMovil(2));
+		
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
 	}
 
@@ -245,6 +263,7 @@ public class TestBasico {
 		assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 		assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 		
+		System.out.println("");
 		assertEquals(TipoRet.OK, s.recibirLlamado("AAGUA14", 2));
 		assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
 	}
@@ -268,6 +287,7 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 			
 			assertEquals(TipoRet.OK, s.recibirLlamado("AAGUA14", 2));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.cambiarUbicacion("AAGUA14", 2));
 		}
 		finally {
@@ -294,6 +314,7 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 			assertEquals(TipoRet.OK, s.recibirLlamado("AAGUA14", 2));
 			
+			System.out.println("");
 			assertEquals(TipoRet.ERROR2, s.cambiarUbicacion("AAGUT14", 2));
 		}
 		finally {
@@ -315,6 +336,7 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.agregarZona("Cordon"));
 			assertEquals(TipoRet.OK, s.agregarZona("Paso de la Arena"));	
 
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.listarZonas());
 			
 		}
@@ -330,6 +352,8 @@ public class TestBasico {
 			System.out.println("------testListarZonasVacio------");
 	
 			assertEquals(TipoRet.OK, s.crearSistemaSeguridad(6));
+			
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.listarZonas());
 			
 		}
@@ -358,8 +382,11 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.agregarRuta(6, 3, 15));
 			assertEquals(TipoRet.OK, s.agregarRuta(3, 4, 15));
 			assertEquals(TipoRet.OK, s.agregarRuta(4, 5, 9));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.agregarRuta(9, 2, 5));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR2, s.agregarRuta(1, 9, 5));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR3, s.agregarRuta(1, 2, 0));
 			
 		}
@@ -389,9 +416,13 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.agregarRuta(3, 4, 15));
 			assertEquals(TipoRet.OK, s.agregarRuta(4, 5, 9));
 
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.modificarDemora(4, 5, 7));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.modificarDemora(9, 2, 5));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR2, s.modificarDemora(1, 9, 5));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR3, s.modificarDemora(1, 2, 0));
 			
 		}
@@ -425,9 +456,13 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.registrarMovil("AAGUA14", 3));
 			assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 			
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.movilMasCercana(2));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.movilMasCercana(1));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.movilMasCercana(9));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.movilMasCercana(5));
 			
 		}
@@ -457,6 +492,7 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.agregarRuta(3, 4, 15));
 			assertEquals(TipoRet.OK, s.agregarRuta(4, 5, 9));
 
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.movilMasCercana(2));
 			
 		}
@@ -487,10 +523,15 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.agregarRuta(3, 4, 15));
 			assertEquals(TipoRet.OK, s.agregarRuta(4, 5, 9));
 
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.rutaMasRapida(1, 3));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.rutaMasRapida(1, 4));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.rutaMasRapida(9, 3));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR2, s.rutaMasRapida(1, 9));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.rutaMasRapida(1, 1));
 			
 		}
@@ -524,6 +565,7 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 			assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.informeZonas());
 			
 		}
@@ -562,7 +604,9 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
 			assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.registrarChofer("AJSIDS02", "Mario Perez", "4.325.353-8"));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.registrarChofer("AAG204", "Mario Perez", "4.325.353-8"));
 		}
 		finally {
@@ -596,7 +640,10 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
 
 			assertEquals(TipoRet.OK, s.registrarChofer("AAG204", "Mario Perez", "4.325.353-8"));
+			
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.eliminarChofer("AAG204", "4.325.353-8"));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.eliminarChofer("AAG23204", "4.325.353-8"));
 
 		}
@@ -635,8 +682,11 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.registrarChofer("AAG204", "Joe Don", "3.575.343-8"));
 			assertEquals(TipoRet.OK, s.registrarChofer("AAG204", "The Matrix", "3.575.343-8"));
 			
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.informeChoferes("SAG204"));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.informeChoferes("QOG324"));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.informeChoferes("AAG204"));
 		}
 		finally {
@@ -674,8 +724,11 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.registrarChofer("AAG204", "Joe Don", "3.575.343-8"));
 			assertEquals(TipoRet.OK, s.registrarChofer("AAG204", "The Matrix", "3.575.343-8"));
 			
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.registrarAbonado(32, "Un Nombre", "Una direccion", "Un teléfono", 2));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR2, s.registrarAbonado(32, "Un Nombre", "Una direccion", "Un teléfono", 2));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.registrarAbonado(12, "Un Nombre", "Una direccion", "Un teléfono", 7));
 
 		}
@@ -716,7 +769,9 @@ public class TestBasico {
 			
 			assertEquals(TipoRet.OK, s.registrarAbonado(32, "Un Nombre", "Una direccion", "Un teléfono", 2));
 			
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.eliminarAbonado(32));
+			System.out.println("");
 			assertEquals(TipoRet.ERROR1, s.eliminarAbonado(32));
 		}
 		finally {
@@ -761,7 +816,9 @@ public class TestBasico {
 			assertEquals(TipoRet.OK, s.registrarAbonado(28, "Tardis", "Time and relative dimension space", "53K", 2));
 
 			assertEquals(TipoRet.ERROR1, s.informeAbonadosZona(7));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.informeAbonadosZona(1));
+			System.out.println("");
 			assertEquals(TipoRet.OK, s.informeAbonadosZona(2));
 			
 		}

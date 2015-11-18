@@ -6,7 +6,6 @@ import Listas.AbonadoComparator;
 import Listas.ILista;
 import Listas.ListaOrd;
 import Listas.ListaSEFin;
-import Listas.ListaSEIni;
 import Listas.MovilComparator;
 import Listas.NodoLista;
 import Listas.ZonaComparator;
@@ -18,6 +17,10 @@ public class Sistema implements ISistema {
 	int cantZonas;
 	ListaOrd abonados;
 
+	//================================================================================
+    // Overrides ISistema
+    //================================================================================
+	
 	@Override
 	public TipoRet crearSistemaSeguridad(int cantZonas) {
 		//New de listas, inicializacion de cantZonas
@@ -36,7 +39,6 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet destruirSistemaSeguridad() {
-		// esto será asi, o con solo un "= null" ??? <--------- TODO
 		zonas.vaciar();
 		Zona.setUltId(1);
 		moviles.vaciar();
@@ -87,7 +89,7 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet habilitarMovil(String movilID) {
-		Movil m = this.returnMovil(movilID); // chequear que le cambie correctamente el estado cuando busco el movil desde una de las listas TODO
+		Movil m = this.returnMovil(movilID); 
 		if (m == null){
 			System.out.println("No existe un móvil con identificador " + movilID + ".");
 			return TipoRet.ERROR1;
@@ -140,14 +142,6 @@ public class Sistema implements ISistema {
 			System.out.println("#Llamados:" + m.getLlamados().largo()); 
 			return TipoRet.OK;
 		}
-	}
-
-	public Movil returnMovil(String movilID){
-		for (Object o: moviles){
-			Movil m = (Movil) o;
-			if (m.getId().equals(movilID)) return m;
-		}
-		return null;
 	}
 	
 	@Override
@@ -203,7 +197,7 @@ public class Sistema implements ISistema {
 		if (z != null){
 			if (m != null){
 				if (m.getLlamados().largo() != 0){
-					Zona siguiente = (Zona)m.getLlamados().getInicio().getDato(); 
+					Zona siguiente = (Zona)m.getLlamados().front(); 
 					if (siguiente != z){
 						System.out.println("La ubicacion no es la del proximo llamado.");
 						return TipoRet.ERROR3;
@@ -215,7 +209,7 @@ public class Sistema implements ISistema {
 						// elimina al movil de la zona anterior
 						ubicacionPrevia.getMoviles().borrarElemento(m);
 						// elimina la zona de la pila de llamados (primer item)
-						m.getLlamados().borrarInicio();
+						m.getLlamados().dequeue();
 						return TipoRet.OK;
 					}
 				} 
@@ -257,14 +251,6 @@ public class Sistema implements ISistema {
 		}				
 		else System.out.println("No existen zonas en el mapa");
 		return TipoRet.OK;
-	}
-	
-	public Zona buscarZona(int idZona){
-		for (Object o : zonas) {
-			Zona z = (Zona) o;
-			if (z.getId() == idZona) return z;
-		}
-		return null;
 	}
 
 	@Override
@@ -402,84 +388,7 @@ public class Sistema implements ISistema {
 		}
 		
 	}
-	
-	// destino se mantiene
-	public ILista rutaMasRapidaREC(int zOrigen, int zDestino, ILista caminoRecorrido){ 
-		caminoRecorrido.insertar(zOrigen);
-		if (zOrigen == zDestino) return caminoRecorrido;
-		else {
-			ILista mejorCamino = null;
-			int mejorDuracion = Integer.MAX_VALUE;
-			int duracion = Integer.MAX_VALUE;
-			Zona zO = buscarZona(zOrigen);
 
-			for (Object o : zO.getEsOrigenDeRutas())
-			{
-				int zNextDest = ((Ruta)o).getDestino().getId();
-				boolean caminoLoop = false;
-				for (Object o2 : caminoRecorrido){
-					Zona checkZona = buscarZona((int)((NodoLista)o2).getDato());
-					if (checkZona.equals(buscarZona(zNextDest))) {
-						caminoLoop = true;
-						break;
-					}
-					
-				}
-				if (caminoLoop) continue;
-				ILista retorno = rutaMasRapidaREC(zNextDest, zDestino, caminoRecorrido.clon());
-				if (retorno != null) duracion = duracion(retorno, false);
-				
-				// mejorcamino no fue elegido, o su duracion es menor que la que está guardada actualmente
-				if (mejorCamino == null || (retorno != null && duracion < mejorDuracion)){
-					mejorCamino = retorno;
-					mejorDuracion = duracion;
-				}
-			}
-			return mejorCamino;
-		}
-	}
-
-	
-	
-	//Metodo de la duracion
-	// voy a recibir una duracion de ILista
-	private int duracion(ILista lis, boolean printScreen){
-		
-		if (lis.largo() == 1){
-			if (printScreen == true) System.out.println( (buscarZona(((int)(((ListaSEFin)lis).getFin().getDato())))).getNombre() + " - 0");
-			return 0; 
-		}
-		else {
-			int total = 0;
-			Zona aux = null;
-			// itero sobre las zonas 
-			for (Object o: lis){
-				if (aux == null){
-					aux = (Zona) buscarZona((int) ((NodoLista)o).getDato()); // aux es el primer item (origen == 1)
-					if (printScreen == true) System.out.println(aux.getNombre() + " - 0");
-				}
-				Zona z = (Zona) buscarZona((int) ((NodoLista)o).getDato()); 
-				
-				NodoLista sig = ((NodoLista) o).getSig();
-				if (sig != null){
-					Zona zSiguiente = (Zona)buscarZona((int)sig.getDato());
-					for (Object o2: z.getEsOrigenDeRutas()){
-						Ruta r = (Ruta) o2;
-						
-						if (r.getDestino().equals(zSiguiente)){
-							total +=r.getMinutosViaje();
-							if (printScreen == true) System.out.println(zSiguiente.getNombre()+" - " + total); // do break from this loop
-							break;
-						}
-					}
-				}
-				
-			}
-			if (printScreen == true) System.out.println("Total: " + total);
-			return total; 
-		}
-	}
-	
 	@Override
 	public TipoRet informeZonas() {
 		for (Object o : this.zonas){
@@ -562,13 +471,6 @@ public class Sistema implements ISistema {
 		}
 		
 	}
-	
-	public Abonado buscarAbonado(int idAbonado){
-		for (Object o : this.abonados){
-			if (((Abonado)o).getId() == idAbonado) return (Abonado) o;
-		}
-		return null;
-	}
 
 	@Override
 	public TipoRet eliminarAbonado(int abonadoId) {
@@ -612,6 +514,106 @@ public class Sistema implements ISistema {
 			System.out.println("La zona " + zonaID + " no existe.");
 			return TipoRet.ERROR1;
 		}
+	}
+	
+	//================================================================================
+    // Métodos propios
+    //================================================================================
+
+	public Movil returnMovil(String movilID){
+		for (Object o: moviles){
+			Movil m = (Movil) o;
+			if (m.getId().equals(movilID)) return m;
+		}
+		return null;
+	}
+	
+	public Zona buscarZona(int idZona){
+		for (Object o : zonas) {
+			Zona z = (Zona) o;
+			if (z.getId() == idZona) return z;
+		}
+		return null;
+	}
+	
+	public ILista rutaMasRapidaREC(int zOrigen, int zDestino, ILista caminoRecorrido){ 
+		// destino se mantiene
+		caminoRecorrido.insertar(zOrigen);
+		if (zOrigen == zDestino) return caminoRecorrido;
+		else {
+			ILista mejorCamino = null;
+			int mejorDuracion = Integer.MAX_VALUE;
+			int duracion = Integer.MAX_VALUE;
+			Zona zO = buscarZona(zOrigen);
+
+			for (Object o : zO.getEsOrigenDeRutas())
+			{
+				// chequeo que la proxima zona no esté repetida para no entrar en loops
+				int zNextDest = ((Ruta)o).getDestino().getId();
+				boolean caminoLoop = false;
+				for (Object o2 : caminoRecorrido){
+					Zona checkZona = buscarZona((int)((NodoLista)o2).getDato());
+					if (checkZona.equals(buscarZona(zNextDest))) {
+						caminoLoop = true;
+						break;
+					}
+				}
+				if (caminoLoop) continue;
+				ILista retorno = rutaMasRapidaREC(zNextDest, zDestino, caminoRecorrido.clone());
+				if (retorno != null) duracion = duracion(retorno, false);
+				
+				// mejorcamino no fue elegido, o su duracion es menor que la que está guardada actualmente
+				if (mejorCamino == null || (retorno != null && duracion < mejorDuracion)){
+					mejorCamino = retorno;
+					mejorDuracion = duracion;
+				}
+			}
+			return mejorCamino;
+		}
+	}
+	
+	private int duracion(ILista lis, boolean printScreen){
+		
+		if (lis.largo() == 1){
+			if (printScreen == true) System.out.println( (buscarZona(((int)(((ListaSEFin)lis).getFin().getDato())))).getNombre() + " - 0");
+			return 0; 
+		}
+		else {
+			int total = 0;
+			Zona aux = null;
+			// itero sobre las zonas 
+			for (Object o: lis){
+				if (aux == null){
+					aux = (Zona) buscarZona((int) ((NodoLista)o).getDato()); // aux es el primer item 
+					if (printScreen == true) System.out.println(aux.getNombre() + " - 0");
+				}
+				Zona z = (Zona) buscarZona((int) ((NodoLista)o).getDato()); 
+				
+				NodoLista sig = ((NodoLista) o).getSig();
+				if (sig != null){
+					Zona zSiguiente = (Zona)buscarZona((int)sig.getDato());
+					for (Object o2: z.getEsOrigenDeRutas()){
+						Ruta r = (Ruta) o2;
+						
+						if (r.getDestino().equals(zSiguiente)){
+							total +=r.getMinutosViaje();
+							if (printScreen == true) System.out.println(zSiguiente.getNombre()+" - " + total); 
+							break;
+						}
+					}
+				}
+				
+			}
+			if (printScreen == true) System.out.println("Total: " + total);
+			return total; 
+		}
+	}
+	
+	public Abonado buscarAbonado(int idAbonado){
+		for (Object o : this.abonados){
+			if (((Abonado)o).getId() == idAbonado) return (Abonado) o;
+		}
+		return null;
 	}
 	
 }

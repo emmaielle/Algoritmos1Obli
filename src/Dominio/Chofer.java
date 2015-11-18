@@ -5,6 +5,10 @@ public class Chofer {
 	private String nombre;
 	private String cedula;
 	
+	//================================================================================
+    // Properties
+    //================================================================================
+	
 	public String getNombre(){
 		return this.nombre;
 	}

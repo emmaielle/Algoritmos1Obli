@@ -16,24 +16,47 @@ public class Abonado {
 		this.telefono = abonadoTel;
 	}
 	
+	//================================================================================
+    // Properties
+    //================================================================================
+	
 	public Zona getZona(){
 		return this.deZona;
+	}
+	
+	public void setZona(Zona zona){
+		this.deZona = zona;
 	}
 	
 	public int getId(){
 		return this.id;
 	}
 	
+	public void setId(int id){
+		this.id = id;
+	}
+	
 	public String getNombre(){
 		return this.nombre;
+	}
+	
+	public void setNombre(String nom){
+		this.nombre = nom;
 	}
 	
 	public String getDireccion(){
 		return this.direccion;
 	}
 	
+	public void setDireccion(String direcc){
+		this.direccion = direcc;
+	}
+	
 	public String getTelefono(){
 		return this.telefono;
 	}
 	
+	public void setTelefono(String tel){
+		this.telefono = tel;
+	}
 }

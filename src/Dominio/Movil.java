@@ -2,9 +2,9 @@ package Dominio;
 
 import Listas.ChoferComparator;
 import Listas.ListaOrd;
-import Listas.ListaSEIni;
+import Listas.Queue;
 
-public class Movil implements Comparable<Movil> {
+public class Movil {
 
 	private String  id; 
 	
@@ -17,26 +17,24 @@ public class Movil implements Comparable<Movil> {
 	private Estado estado;
 	
 	public ListaOrd choferes;
-	private ListaSEIni llamados;
+	private Queue llamados;
 	private Zona ubicacion;
 	
 	public Movil(String id, Zona ubicacion){
 		this.id = id;
 		this.estado = Estado.DISPONIBLE;
-		this.llamados = new ListaSEIni();
+		this.llamados = new Queue();
 		this.ubicacion = ubicacion;
 		this.choferes = new ListaOrd(new ChoferComparator());
 	}
 	
-	@Override
-	public int compareTo(Movil other){
-		return id.compareTo(other.getId());
-	}
+	//================================================================================
+    // Methods
+    //================================================================================
 	
 	public void recibirLlamado(Zona zona){
-		this.llamados.agregarFinal(zona);
+		this.llamados.enqueue(zona);
 	}
-	
 	
 	public Chofer buscarChofer(String cedula){
 		for (Object o: choferes){
@@ -57,13 +55,9 @@ public class Movil implements Comparable<Movil> {
 		else System.out.println("No posee choferes habilitados");
 	}
 	
-	@Override
-	public String toString(){
-		String sUbicacion = this.ubicacion.getNombre();
-		String ret = this.id + "-" + this.estado.toString();
-		if (!this.estado.equals(Estado.ATENDIENDO_LLAMADO)) return ret + "-" + sUbicacion;
-		return ret;
-	}
+	//================================================================================
+    // Properties
+    //================================================================================
 	
 	public String getId(){
 		return this.id;
@@ -73,7 +67,7 @@ public class Movil implements Comparable<Movil> {
 		this.id = id;
 	}
 	
-	public ListaSEIni getLlamados(){
+	public Queue getLlamados(){
 		return this.llamados;
 	}
 	
@@ -93,11 +87,16 @@ public class Movil implements Comparable<Movil> {
 		return this.ubicacion;
 	}
 	
-//	public void setChoferes(ListaOrd choferes){
-//		this.choferes = choferes;
-//	}
-//	
-//	public ListaOrd getChoferes(){
-//		return this.choferes;
-//	}
+	//================================================================================
+    // Overrides
+    //================================================================================
+	
+	@Override
+	public String toString(){
+		String sUbicacion = this.ubicacion.getNombre();
+		String ret = this.id + "-" + this.estado.toString();
+		if (!this.estado.equals(Estado.ATENDIENDO_LLAMADO)) return ret + "-" + sUbicacion;
+		return ret;
+	}
+		
 }

@@ -12,6 +12,10 @@ public class Ruta {
 		this.minutosViaje = duracion;
 	}
 	
+	//================================================================================
+    // Properties
+    //================================================================================
+	
 	public int getMinutosViaje(){
 		return this.minutosViaje;
 	}
@@ -24,7 +28,15 @@ public class Ruta {
 		return this.origen;
 	}
 	
+	public void setOrigen(Zona origen){
+		this.origen = origen;
+	}
+	
 	public Zona getDestino(){
 		return this.destino;
+	}
+	
+	public void setDestino(Zona destino){
+		this.destino = destino;
 	}
 }

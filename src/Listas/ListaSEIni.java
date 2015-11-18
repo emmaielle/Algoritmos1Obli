@@ -31,8 +31,6 @@ public class ListaSEIni implements ILista{
     public void vaciar(){
         //en java alcanza con apuntar inicio y fin a null
         inicio=null;
-//        while (inicio!=null)
-//            borrarInicio();
     }
 	
 	@Override
@@ -90,40 +88,13 @@ public class ListaSEIni implements ILista{
 			
 		};
 	}
-	
-//    //PRE: 
-//    //POS: Agrega un nuevo Nodo al principio de la lista
-//    public void agregarInicio(Object o){
-//        NodoLista nuevo= new NodoLista(o);
-//        nuevo.setSig(inicio);
-//        this.inicio=nuevo;
-//        if(this.fin==null)//estoy insertando el primer nodo
-//            this.fin=nuevo;
-//        }
-//    
-    //PRE:
-    //POS: Agrega un nuevo Nodo al final de la lista
-    public void agregarFinal(Object o){
-        //NodoLista nuevo= new NodoLista(n);
-        if (this.esVacia())
-            this.insertar(o);
-        else
-        {
-            NodoLista aux=this.inicio;
-            while (aux.getSig() != null)
-                aux=aux.getSig();
-            NodoLista nuevo= new NodoLista(o);
-            aux.setSig(nuevo);
-        }
-    }
 
     @Override
-    public ILista clon(){
+    public ILista clone(){
 		ILista lis = new ListaSEIni(); 
 		NodoLista aux = inicio;
 		while (aux!=null){
-			lis.insertar(aux.getDato()); //nodo que tiene zona
-			//tenemos memoria distinta que apunta al mismo objeto
+			lis.insertar(aux.getDato()); 
 			aux = aux.getSig();
 		}
 		return lis;
@@ -138,8 +109,3 @@ public class ListaSEIni implements ILista{
 	}
 
 }
-	
-	
-	// clase arriba, que herede de estas dos y luego clases abajo que hereden
-
-

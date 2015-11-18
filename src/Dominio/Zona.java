@@ -20,6 +20,10 @@ public class Zona {
 		this.esOrigenDeRutas = new ListaSEIni();
 	}
 	
+	//================================================================================
+    // Methods
+    //================================================================================
+	
 	public void informeMovil(){
 		System.out.println("Informe de móviles en: " + this.id + " - " + this.nombre);
 		if (!this.moviles.esVacia()){
@@ -81,11 +85,16 @@ public class Zona {
 		}
 		System.out.println("Móvils disponibles: " + movDisp);
 		System.out.println("Móvils no disponibles: " + movNOdisp);
+		System.out.println("");
 	}
 
 	public void insertarMovil(Movil mov){
 		this.moviles.insertar(mov);
 	}
+	
+	//================================================================================
+    // Properties
+    //================================================================================
 	
 	public String getNombre(){
 		return this.nombre;
@@ -114,6 +123,7 @@ public class Zona {
 	public static void setUltId(int id){
 		Zona.ultId = id;
 	}
+	
 	public static int getUltId(){
 		return Zona.ultId;
 	}
