@@ -576,7 +576,39 @@ public class TestBasico {
 
 	@Test
 	public void testZonasEnRadio() {
-		fail("Not yet implemented");
+		try {
+			System.out.println("");
+			System.out.println("-----testInformeZonas------");
+	
+			assertEquals(TipoRet.OK, s.crearSistemaSeguridad(6));
+			assertEquals(TipoRet.OK, s.agregarZona("Piedras Blancas"));
+			assertEquals(TipoRet.OK, s.agregarZona("La Comercial"));
+			assertEquals(TipoRet.OK, s.agregarZona("Carrasco"));
+			assertEquals(TipoRet.OK, s.agregarZona("Pocitos"));
+			assertEquals(TipoRet.OK, s.agregarZona("Cordon"));
+			assertEquals(TipoRet.OK, s.agregarZona("Paso de la Arena"));	
+
+			assertEquals(TipoRet.OK, s.agregarRuta(1, 2, 5));
+			assertEquals(TipoRet.OK, s.agregarRuta(1, 6, 8));
+			assertEquals(TipoRet.OK, s.agregarRuta(2, 6, 8));
+			assertEquals(TipoRet.OK, s.agregarRuta(2, 5, 8));			
+			assertEquals(TipoRet.OK, s.agregarRuta(6, 3, 25));
+			assertEquals(TipoRet.OK, s.agregarRuta(3, 4, 15));
+			assertEquals(TipoRet.OK, s.agregarRuta(4, 5, 9));
+			assertEquals(TipoRet.OK, s.registrarMovil("AAG204", 2));
+			assertEquals(TipoRet.OK, s.registrarMovil("AAGUA14", 3));
+			assertEquals(TipoRet.OK, s.registrarMovil("QOG324", 2));
+			assertEquals(TipoRet.OK, s.deshabilitarMovil("AAG204"));
+
+			System.out.println("");
+			assertEquals(TipoRet.ERROR2, s.zonasEnRadio(1, 0));
+			assertEquals(TipoRet.ERROR1, s.zonasEnRadio(9, 13));			
+			assertEquals(TipoRet.OK, s.zonasEnRadio(1, 13));
+			
+		}
+		finally {
+			assertEquals(TipoRet.OK, s.destruirSistemaSeguridad());
+		}
 	}
 
 	@Test

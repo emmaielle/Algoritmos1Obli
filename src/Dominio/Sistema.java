@@ -6,6 +6,7 @@ import Listas.AbonadoComparator;
 import Listas.ILista;
 import Listas.ListaOrd;
 import Listas.ListaSEFin;
+import Listas.ListaSEIni;
 import Listas.MovilComparator;
 import Listas.NodoLista;
 import Listas.ZonaComparator;
@@ -400,7 +401,32 @@ public class Sistema implements ISistema {
 
 	@Override
 	public TipoRet zonasEnRadio(int zonaID, int duracionViaje) {
-		return TipoRet.NO_IMPLEMENTADA;
+		Zona z = buscarZona(zonaID);
+		
+		if (z != null){
+			if (duracionViaje > 0){
+				System.out.println("Zonas en radio de "+ duracionViaje +" minutos: ");
+				for (Object o : this.zonas){
+					Zona zona = (Zona) o;
+					ILista result = rutaMasRapidaREC(zonaID, zona.getId(), new ListaSEFin());
+					int duracion = duracion(result, false);
+					
+					if(duracion <= duracionViaje){
+						System.out.println("Zona " + zona.getId() + " a " + duracion + " minutos.");						
+					}
+				}
+				
+				return TipoRet.OK;
+			} 
+			else {
+				System.out.println("La duracion del viaje debe ser mayor a 0.");
+				return TipoRet.ERROR2;
+			}
+		}
+		else {
+			System.out.println("La zona "+ zonaID + " no existe.");
+			return TipoRet.ERROR1;
+		}
 	}
 
 	@Override
